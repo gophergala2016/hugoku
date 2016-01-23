@@ -16,7 +16,6 @@ type Step struct {
 	Stderr  string
 }
 
-var commands []Step
 var listCommands []string
 
 func (s *Step) executeCommand() error {
@@ -51,18 +50,12 @@ func (s *Step) executeCommand() error {
 	return err
 }
 
-func initCommandsNewSite(name string) []Step {
-
-	commands := append(commands, Step{
-		Command: "git",
-		Args:    []string{"pull", name},
-		Stdout:  "",
-		Stderr:  "",
-	})
+func initCommandsNewSite(username string, name string, path string) []Step {
+	var commands []Step
 
 	commands = append(commands, Step{
 		Command: "hugo",
-		Args:    []string{"-s", name},
+		Args:    []string{"new", "site", path},
 		Stdout:  "",
 		Stderr:  "",
 	})
@@ -70,8 +63,9 @@ func initCommandsNewSite(name string) []Step {
 	return commands
 }
 
-func initCommandsExistingSite(name string) []Step {
-	commands := append(commands, Step{
+func initCommandsExistingSite(username string, name string, path string) []Step {
+	var commands []Step
+	commands = append(commands, Step{
 		Command: "git",
 		Args:    []string{"pull", "origin", "master"},
 		Stdout:  "",
@@ -88,28 +82,30 @@ func initCommandsExistingSite(name string) []Step {
 }
 
 // Build compiles a project
-func Build(name string) error {
+func Build(username string, name string, path string) error {
 	var commands []Step
-	if _, err := os.Stat("/tmp/hugosites/" + name); os.IsNotExist(err) {
-
-		commands = initCommandsNewSite(name)
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		// Not exists
+		commands = initCommandsNewSite(username, name, path)
 		// commandsForNewSite
 		// path/to/whatever does not exist
-	} else {
-		os.Chdir("/tmp/hugosites/" + name)
-		commands = initCommandsExistingSite(name)
 
+	} else {
+		fmt.Println("repo exists")
+		// os.Chdir(path)
+		// commands = initCommandsExistingSite(name)
 		// commandsForExisting site
 	}
-	//wd, _ := os.Getwd()
+
 	for i := range commands {
-
 		err := commands[i].executeCommand()
-
+		fmt.Println("Command")
+		fmt.Println(commands[i].Command)
 		fmt.Println("Stdout")
 		fmt.Println(commands[i].Stdout)
 		fmt.Println("Stderr")
 		fmt.Println(commands[i].Stderr)
+		fmt.Println("-----")
 		if err != nil {
 			return err
 		}
@@ -120,5 +116,9 @@ func Build(name string) error {
 
 // Deploy deploys a project
 func Deploy(username string, name string) (path string, err error) {
-	return "", nil
+	path = fmt.Sprintf("./repos/%s/%s", username, name)
+
+	err = Build(username, name, path)
+
+	return path, err
 }
