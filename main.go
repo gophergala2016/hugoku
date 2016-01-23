@@ -46,6 +46,7 @@ func Serve() {
 	router := httprouter.New()
 	router.GET("/", Index)
 	router.GET("/auth/login", githubLoginHandler)
+	router.GET("/auth/logout", githubLogoutHandler)
 	router.GET("/auth/callback", githubCallbackHandler)
 	router.GET("/project/:id", getProjectHandler)
 	router.GET("/about", About)
@@ -87,6 +88,12 @@ func githubLoginHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	url := oauthConf.AuthCodeURL(OAUTH_RANDOM_CSRF_STRING, oauth2.AccessTypeOnline)
 	log.Println("Redirecting the user to github login")
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+}
+
+func githubLogoutHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	session := sessions.GetSession(r)
+	session.Delet("username")
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
 //gitHubCalbackHandler Called by github after authorization is granted
