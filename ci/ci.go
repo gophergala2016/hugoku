@@ -16,10 +16,7 @@ type Step struct {
 	Stderr  string
 }
 
-var listCommands []string
-
 func (s *Step) executeCommand() error {
-	fmt.Println(s.Command)
 	cmd := exec.Command(s.Command, s.Args...)
 	stdout, err := cmd.StdoutPipe()
 	buf := new(bytes.Buffer)
