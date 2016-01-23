@@ -17,29 +17,22 @@ import (
 	"github.com/julienschmidt/httprouter"
 	githuboauth "golang.org/x/oauth2/github"
 
-	"github.com/gophergala2016/hugoku/ci"
 	"github.com/gophergala2016/hugoku/store"
 )
 
-// Project is the representation of a site to build
-type Project struct {
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Token    string `json:"token"`
-}
+type (
+	Project struct {
+		Name     string `json:"name"`
+		Username string `json:"username"`
+		Token    string `json:"token"`
+	}
+)
 
-// OAuthRandomCSRString random string for oauth2 API calls to protect against CSRF
+// random string for oauth2 API calls to protect against CSRF
 // TODO: make it random
-const OAuthRandomCSRString = "FenaeTaini5thu5eimohpeer1ear5m"
+const OAUTH_RANDOM_CSRF_STRING = "FenaeTaini5thu5eimohpeer1ear5m"
 
 func main() {
-	/*
-		path, err := ci.Deploy("repejota", "foo")
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(path)
-	*/
 	Serve()
 }
 
@@ -67,8 +60,10 @@ func Serve() {
 	router.GET("/auth/login", githubLoginHandler)
 	router.GET("/auth/logout", githubLogoutHandler)
 	router.GET("/auth/callback", githubCallbackHandler)
-	router.GET("/v1/projects/:id", getProjectHandler)
-	router.POST("/v1/projects", postProjectHandler)
+	router.GET("/project/:id", getProjectHandler)
+	router.POST("/project", postProjectHandler)
+	//router.GET("/v1/projects/:id", getProjectHandler)
+	//router.POST("/v1/projects", postProjectHandler)
 	router.GET("/about", About)
 	router.GET("/faq", FAQ)
 
@@ -108,7 +103,7 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func githubLoginHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	log.Println("githubLoginHandler")
 
-	url := oauthConf.AuthCodeURL(OAuthRandomCSRString, oauth2.AccessTypeOnline)
+	url := oauthConf.AuthCodeURL(OAUTH_RANDOM_CSRF_STRING, oauth2.AccessTypeOnline)
 	log.Println("Redirecting the user to github login")
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
@@ -123,8 +118,8 @@ func githubLogoutHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	log.Println("githubCallbackHandler")
 	state := r.FormValue("state")
-	if state != OAuthRandomCSRString {
-		log.Printf("invalid oauth state, expected '%s', got '%s'\n", OAuthRandomCSRString, state)
+	if state != OAUTH_RANDOM_CSRF_STRING {
+		log.Printf("invalid oauth state, expected '%s', got '%s'\n", OAUTH_RANDOM_CSRF_STRING, state)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
@@ -163,15 +158,14 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 
 func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
-	log.Println("postProjectHandler")
-	session := sessions.GetSession(r)
-	username := session.Get("username")
-	log.Println("Recovering user data")
-	user, err := store.GetUser(username.(string))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println(user)
+	/*
+		session := sessions.GetSession(r)
+		_, err := session.Get("username")
+			user, err := store.GetUser(username)
+			if err != nil {
+				log.Fatal(err)
+			}
+	*/
 
 	projectName := r.PostFormValue("name")
 	fmt.Println(projectName)
@@ -195,7 +189,7 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		Name:    github.String(p.Name),
 		Private: github.Bool(false),
 	}
-	_, _, err = client.Repositories.Create("", repo)
+	_, _, err := client.Repositories.Create("", repo)
 
 	if err != nil {
 		log.Printf("Error while trying to create repo: %s", err)
