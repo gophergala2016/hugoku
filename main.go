@@ -184,6 +184,11 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		log.Fatalf("Error while trying to create project: %s", err)
 	}
 
+	project := store.Project{Name: projectName}
+	user.Projects = append(user.Projects, project)
+
+	err = store.SaveUser(user)
+
 	if !repoExists(client, username.(string), projectName) {
 		repo := &github.Repository{
 			Name:    github.String(projectName),
