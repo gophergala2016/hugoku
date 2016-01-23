@@ -8,6 +8,7 @@ import (
 	"os/exec"
 )
 
+// Step is a task to perform during the deployment
 type Step struct {
 	Command string
 	Args    []string
@@ -86,6 +87,7 @@ func initCommandsExistingSite(name string) []Step {
 	return commands
 }
 
+// Build compiles a project
 func Build(name string) error {
 	var commands []Step
 	if _, err := os.Stat("/tmp/hugosites/" + name); os.IsNotExist(err) {
@@ -99,7 +101,7 @@ func Build(name string) error {
 
 		// commandsForExisting site
 	}
-	wd, _ := os.Getwd()
+	//wd, _ := os.Getwd()
 	for i := range commands {
 
 		err := commands[i].executeCommand()
@@ -116,6 +118,7 @@ func Build(name string) error {
 	return nil
 }
 
+// Deploy deploys a project
 func Deploy() {
 
 }
