@@ -7,9 +7,9 @@
 
 This is a high level list of features the project needs to accomplish, a.k.a our MVP, to present at the end of the hackathon.
 
-## Front
+## Front ( Pablo )
 
-* GET / Home ( Pablo )
+* GET / Home 
 * An unauthorized user sees a simple template with a login with github button.
 * An user needs to login with his github credentials.
 * An authorized user sees a form to create project inside hugoku.
