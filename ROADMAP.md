@@ -9,7 +9,7 @@ This is a high level list of features the project needs to accomplish, a.k.a our
 
 ## Front
 
-* GET / Home
+* GET / Home ( Pablo )
 * An unauthorized user sees a simple template with a login with github button.
 * An user needs to login with his github credentials.
 * An authorized user sees a form to create project inside hugoku.
@@ -22,7 +22,7 @@ This is a high level list of features the project needs to accomplish, a.k.a our
 * GET /project/id 
 * Shows the project and the build history 
 
-## Backend
+## Backend ( Fran )
 
 * POST /projects creates the project on hugoku.
 	* Creates a repo on github 
@@ -33,7 +33,7 @@ This is a high level list of features the project needs to accomplish, a.k.a our
 
 * POST /project/id/build builds the project
 	
-## CI
+## CI ( Jose )
 
 * Accept gitreceive
 * Accept webhook
