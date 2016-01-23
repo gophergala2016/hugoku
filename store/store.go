@@ -22,7 +22,7 @@ type User struct {
 
 // GetUser returns an user info
 func GetUser(username string) (user User, err error) {
-	buf, err := ioutil.ReadFile("./data/" + user.Username + ".json")
+	buf, err := ioutil.ReadFile("./data/" + username + ".json")
 	err = json.Unmarshal(buf, &user)
 	if err != nil {
 		return user, err
