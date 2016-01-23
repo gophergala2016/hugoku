@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +18,14 @@ import (
 	githuboauth "golang.org/x/oauth2/github"
 
 	"github.com/gophergala2016/hugoku/store"
+)
+
+type (
+	Project struct {
+		Name     string `json:"name"`
+		Username string `json:"username"`
+		Token    string `json:"token"`
+	}
 )
 
 // random string for oauth2 API calls to protect against CSRF
@@ -52,6 +62,8 @@ func Serve() {
 	router.GET("/auth/callback", githubCallbackHandler)
 	router.GET("/project/:id", getProjectHandler)
 	router.POST("/project", postProjectHandler)
+	//router.GET("/v1/projects/:id", getProjectHandler)
+	//router.POST("/v1/projects", postProjectHandler)
 	router.GET("/about", About)
 	router.GET("/faq", FAQ)
 
@@ -144,6 +156,48 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
+func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+
+	/*
+		session := sessions.GetSession(r)
+		_, err := session.Get("username")
+			user, err := store.GetUser(username)
+			if err != nil {
+				log.Fatal(err)
+			}
+	*/
+
+	projectName := r.PostFormValue("name")
+	fmt.Println(projectName)
+
+	p := Project{}
+
+	json.NewDecoder(r.Body).Decode(&p)
+
+	pj, _ := json.Marshal(p)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: p.Token},
+	)
+	tc := oauth2.NewClient(oauth2.NoContext, ts)
+	client := github.NewClient(tc)
+
+	repo := &github.Repository{
+		Name:    github.String(p.Name),
+		Private: github.Bool(false),
+	}
+	_, _, err := client.Repositories.Create("", repo)
+
+	if err != nil {
+		log.Printf("Error while trying to create repo: %s", err)
+	}
+
+	fmt.Fprintf(w, "%s", pj)
+}
+
 // About shows info about the project, team  etc ...
 func About(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	t, err := template.ParseFiles("templates/about.html")
@@ -160,23 +214,6 @@ func FAQ(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		log.Fatal("Error parsing the FAQ page template")
 	}
 	t.Execute(w, nil)
-}
-
-// postProjectHandler handles the creation of a new Hugoku project
-func postProjectHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	session := sessions.GetSession(r)
-	username := session.Get("username")
-	user, err := store.GetUser()
-	if err != nil {
-		log.Printf("Couldn't recover user!!!")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
-	}
-
-	projectName := r.PostFormValue("name")
-	log.Printf("username: %s, token: %v, projectName: %s\n", username, user.Token, projectName)
-	// TODO: Handle the project creation
-
 }
 
 // getProjectHandler is the Hugoku project page handdler and shows the project and the build history.
