@@ -62,7 +62,7 @@ func initCommandsNewSite(username string, name string, path string) []Step {
 
 	commands = append(commands, Step{
 		Command: "git",
-		Args:    []string{"clone", "git@github.com:hbpasti/heather-hugo.git", path + "/themes/heather-hugo"},
+		Args:    []string{"clone", "https://github.com/hbpasti/heather-hugo.git", path + "/themes/heather-hugo"},
 		Stdout:  "",
 		Stderr:  "",
 	})
