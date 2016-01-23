@@ -80,8 +80,6 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	session := sessions.GetSession(r)
 	username := session.Get("username")
 
-	log.Println("------", username)
-
 	if username == nil {
 		t, err := template.ParseFiles("templates/index.html")
 		if err != nil {
