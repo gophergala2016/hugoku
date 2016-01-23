@@ -33,12 +33,14 @@ type Project struct {
 const OAuthRandomCSRString = "FenaeTaini5thu5eimohpeer1ear5m"
 
 func main() {
-	path, err := ci.Deploy("repejota", "foo")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(path)
-	//Serve()
+	/*
+		path, err := ci.Deploy("repejota", "foo")
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(path)
+	*/
+	Serve()
 }
 
 var (

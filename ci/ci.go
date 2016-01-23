@@ -79,19 +79,20 @@ func initCommandsNewSite(username string, name string, path string) []Step {
 
 func initCommandsExistingSite(username string, name string, path string) []Step {
 	var commands []Step
-	commands = append(commands, Step{
-		Command: "git",
-		Args:    []string{"pull", "origin", "master"},
-		Stdout:  "",
-		Stderr:  "",
-	})
+	/*
+		commands = append(commands, Step{
+			Command: "git",
+			Args:    []string{"pull", "origin", "master"},
+			Stdout:  "",
+			Stderr:  "",
+		})
 
-	commands = append(commands, Step{
-		Command: "hugo",
-		Stdout:  "",
-		Stderr:  "",
-	})
-
+		commands = append(commands, Step{
+			Command: "hugo",
+			Stdout:  "",
+			Stderr:  "",
+		})
+	*/
 	return commands
 }
 
@@ -99,16 +100,9 @@ func initCommandsExistingSite(username string, name string, path string) []Step 
 func Build(username string, name string, path string) error {
 	var commands []Step
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		// Not exists
 		commands = initCommandsNewSite(username, name, path)
-		// commandsForNewSite
-		// path/to/whatever does not exist
-
 	} else {
-		fmt.Println("repo exists")
-		// os.Chdir(path)
-		// commands = initCommandsExistingSite(name)
-		// commandsForExisting site
+		commands = initCommandsExistingSite(username, name, path)
 	}
 
 	for i := range commands {
