@@ -119,6 +119,6 @@ func Build(name string) error {
 }
 
 // Deploy deploys a project
-func Deploy() {
-
+func Deploy(username string, name string) (path string, err error) {
+	return "", nil
 }
