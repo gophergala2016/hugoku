@@ -69,8 +69,6 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	session := sessions.GetSession(r)
 	username := session.Get("username")
-	token := session.Get("token")
-	log.Printf("token=%s", token)
 
 	log.Println("------", username)
 
@@ -169,7 +167,7 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 	session := sessions.GetSession(r)
 	username := session.Get("username")
 	token := session.Get("token")
-	projectName := r.FormValue("name")
+	projectName := r.PostFormValue("name")
 	log.Printf("username: %s, token: %s, projectName: %s\n", username, token, projectName)
 	// TODO: Handle the project creation
 
