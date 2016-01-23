@@ -236,4 +236,16 @@ func getProjectHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	var id = ps.ByName("id")
 	// TODO: sanitize id
 	log.Printf("getProjectHandler %s!\n", id)
+
+	if id == "" {
+		log.Println("Missing project id!")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+	t, err := template.ParseFiles("templates/project.html")
+	if err != nil {
+		log.Fatal("Error parsing the project page template")
+	}
+	t.Execute(w, nil)
+
 }
