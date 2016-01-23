@@ -18,7 +18,6 @@ import (
 const OAUTH_RANDOM_CSRF_STRING = "FenaeTaini5thu5eimohpeer1ear5m"
 
 func main() {
-	log.Println("Hello hugoku!")
 	Serve()
 }
 
@@ -41,6 +40,8 @@ func Serve() {
 	router.GET("/auth/login", githubLoginHandler)
 	router.GET("/auth/callback", githubCallbackHandler)
 	router.GET("/project/:id", getProjectHandler)
+	router.GET("/about", About)
+	router.GET("/faq", FAQ)
 
 	log.Println("Started running on http://127.0.0.1:8080")
 	// TODO: Get the port from flag, config file or environment var
@@ -50,7 +51,6 @@ func Serve() {
 // Index is the Hugoku home page handler will redirect a non logged user to do the loging with Github
 // or show a list of projectst and a form to add a project to a logged user,
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	log.Println("Hugoku home page!")
 	t, err := template.ParseFiles("templates/index.html")
 	if err != nil {
 		log.Fatal("Error parsing the home page template")
@@ -97,6 +97,24 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 	log.Printf("Logged in as GitHub user: %s\n", *user.Login)
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+}
+
+// About shows info about the project, team  etc ...
+func About(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	t, err := template.ParseFiles("templates/about.html")
+	if err != nil {
+		log.Fatal("Error parsing the about page template")
+	}
+	t.Execute(w, nil)
+}
+
+// FAQ shows frequently asqued questions about the project, team  etc ...
+func FAQ(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	t, err := template.ParseFiles("templates/faq.html")
+	if err != nil {
+		log.Fatal("Error parsing the about page template")
+	}
+	t.Execute(w, nil)
 }
 
 // getProjectHandler is the Hugoku project page handdler and shows the project and the build history.
