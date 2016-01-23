@@ -19,6 +19,7 @@ func Serve() {
 	router := httprouter.New()
 	router.GET("/", Index)
 	router.GET("/about", About)
+	router.GET("/faq", FAQ)
 	router.GET("/login", GithubLogin)
 	router.GET("/project/:id", GetProject)
 
@@ -38,6 +39,15 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 // About shows info about the project, team  etc ...
 func About(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	t, err := template.ParseFiles("templates/about.html")
+	if err != nil {
+		log.Fatal("Error parsing the about page template")
+	}
+	t.Execute(w, nil)
+}
+
+// FAQ shows frequently asqued questions about the project, team  etc ...
+func FAQ(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	t, err := template.ParseFiles("templates/faq.html")
 	if err != nil {
 		log.Fatal("Error parsing the about page template")
 	}
