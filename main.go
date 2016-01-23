@@ -8,6 +8,9 @@ import (
 
 	"golang.org/x/oauth2"
 
+	"github.com/codegangsta/negroni"
+	"github.com/goincremental/negroni-sessions"
+	"github.com/goincremental/negroni-sessions/cookiestore"
 	"github.com/google/go-github/github"
 	"github.com/julienschmidt/httprouter"
 	githuboauth "golang.org/x/oauth2/github"
@@ -35,6 +38,11 @@ var (
 // Serve set the route handlers and serve
 func Serve() {
 
+	// Setup middleware
+	middle := negroni.Classic()
+	store := cookiestore.New([]byte("keyboard cat"))
+	middle.Use(sessions.Sessions("hugoku", store))
+
 	router := httprouter.New()
 	router.GET("/", Index)
 	router.GET("/auth/login", githubLoginHandler)
@@ -43,19 +51,34 @@ func Serve() {
 	router.GET("/about", About)
 	router.GET("/faq", FAQ)
 
+	// Apply middleware to the router
+	middle.UseHandler(router)
+
 	log.Println("Started running on http://127.0.0.1:8080")
 	// TODO: Get the port from flag, config file or environment var
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8080", middle))
 }
 
 // Index is the Hugoku home page handler will redirect a non logged user to do the loging with Github
 // or show a list of projectst and a form to add a project to a logged user,
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	t, err := template.ParseFiles("templates/index.html")
-	if err != nil {
-		log.Fatal("Error parsing the home page template")
+
+	session := sessions.GetSession(r)
+	username := session.Get("username")
+
+	if username == "" {
+		t, err := template.ParseFiles("templates/index.html")
+		if err != nil {
+			log.Fatal("Error parsing the index page template")
+		}
+		t.Execute(w, nil)
+	} else {
+		t, err := template.ParseFiles("templates/home.html")
+		if err != nil {
+			log.Fatal("Error parsing the home page template")
+		}
+		t.Execute(w, nil)
 	}
-	t.Execute(w, nil)
 }
 
 func githubLoginHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -95,6 +118,10 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+
+	session := sessions.GetSession(r)
+	session.Set("username", *user.Login)
+
 	log.Printf("Logged in as GitHub user: %s\n", *user.Login)
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
