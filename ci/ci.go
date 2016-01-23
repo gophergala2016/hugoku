@@ -7,6 +7,7 @@ import (
 	"os/exec"
 )
 
+// Step is a type to define a subtask on the deployment process
 type Step struct {
 	Command string
 	Stdout  string
@@ -41,6 +42,7 @@ func (s *Step) executeCommand() error {
 	return err
 }
 
+// Build compiles the project
 func Build(name string) error {
 
 	commands := append(commands, Step{
@@ -59,6 +61,7 @@ func Build(name string) error {
 	return nil
 }
 
+// Deploy deploys the project and makes it accessible
 func Deploy() {
 
 }
