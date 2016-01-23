@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"time"
 
 	"golang.org/x/oauth2"
 )
@@ -25,7 +26,7 @@ type User struct {
 
 // BuildInfo type
 type BuildInfo struct {
-	BuildTime   Date
+	BuildTime   time.Time
 	BuildStatus string
 }
 

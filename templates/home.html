@@ -46,36 +46,75 @@
         <div class="row">
           <div class="col-md-12">
             <h1>Home</h1>
+            <hr>
+            <h2>Create a new project</h2>
               <form action="/project" method="post">
                 <div class="form-group">
                     <label for="projectName">Project Name</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="MySite">
                 </div>
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
               </form>
           </div>
 					<div class="col-md-12">
-						<h2><img width="40" height="40" src="{{.AvatarURL}}" alt="{{.Username}}"/> {{.Username}} projects</h2>
+            <hr>
+            <h2><img width="40" height="40" src="{{.AvatarURL}}" alt="{{.Username}}"/> {{.Username}} projects</h2>
 						<ul class="media-list">
 							{{range .Projects}}
+              <hr>
 							<li class="media">
-								{{if .Icon}}
-								<div class="media-left">
-									<a href="#">
-										<img class="media-object" src="{{.Icon}}" alt="{{.Name}}">
-									</a>
-								</div>
-								{{end}}
+                <a href="/project/{{.Name}}/rebuild" class="btn btn-primary pull-right"><i class="fa fa-refresh"></i> Rebuild</a>
+                {{if .Icon}}
+                <a class="pull-left" href="/project/{{.Name}}"><img class="media-object" src="{{.Icon}}" alt="{{.Name}}" height="64" width="64"></a>
+                {{else}}
+                <a class="pull-left" href="/project/{{.Name}}"><img class="media-object" src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" alt="{{.Name}}" height="64" width="64"></a>
+                {{end}}
 								<div class="media-body">
-									<a href="/project/{{.Name}}">{{.Name}}</a> <button class="btn btn-default"><i class="fa fa-refresh"></i>
+                  <a href="/project/{{.Name}}"><h4 class="media-heading">{{.Name}}</h4></a>
+									Last updated: <a href="/projects/{{.Name}}">putdatehere</a>
 								</div>
 							</li>
 							{{end}}
 						</ul>
+            <hr>
 					</div>
         </div>
       </div>
     </div>
+
+    <footer class="section section-primary">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <h1>Hugoku</h1>
+            <p>Hugoku has a google of power units.</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="text-info text-right">
+              <br>
+              <br>
+            </p>
+            <div class="row">
+              <div class="col-md-12 hidden-lg hidden-md hidden-sm text-left">
+                <a href="#"><i class="fa fa-3x fa-fw fa-instagram text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-twitter text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-facebook text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-github text-inverse"></i></a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 hidden-xs text-right">
+                <a href="#"><i class="fa fa-3x fa-fw fa-instagram text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-twitter text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-facebook text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-github text-inverse"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
   </body>
 
 </html>
