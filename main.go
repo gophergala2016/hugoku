@@ -1,12 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"text/template"
-	"encoding/json"
 
 	"golang.org/x/oauth2"
 
@@ -21,11 +21,11 @@ import (
 )
 
 type (
-  Project struct {
-    Name   string `json:"name"`
-    Username string `json:"username"`
-    Token    string `json:"token"`
-  }
+	Project struct {
+		Name     string `json:"name"`
+		Username string `json:"username"`
+		Token    string `json:"token"`
+	}
 )
 
 // random string for oauth2 API calls to protect against CSRF
@@ -60,8 +60,10 @@ func Serve() {
 	router.GET("/auth/login", githubLoginHandler)
 	router.GET("/auth/logout", githubLogoutHandler)
 	router.GET("/auth/callback", githubCallbackHandler)
-	router.GET("/v1/projects/:id", getProjectHandler)
-	router.POST("/v1/projects", postProjectHandler)
+	router.GET("/project/:id", getProjectHandler)
+	router.POST("/project", postProjectHandler)
+	//router.GET("/v1/projects/:id", getProjectHandler)
+	//router.POST("/v1/projects", postProjectHandler)
 	router.GET("/about", About)
 	router.GET("/faq", FAQ)
 
@@ -144,6 +146,7 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 
 	var u store.User
 	u.Username = *user.Login
+	u.Token = *token
 	err = store.SaveUser(u)
 
 	session := sessions.GetSession(r)
@@ -154,6 +157,19 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 }
 
 func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+
+	/*
+		session := sessions.GetSession(r)
+		_, err := session.Get("username")
+			user, err := store.GetUser(username)
+			if err != nil {
+				log.Fatal(err)
+			}
+	*/
+
+	projectName := r.PostFormValue("name")
+	fmt.Println(projectName)
+
 	p := Project{}
 
 	json.NewDecoder(r.Body).Decode(&p)
@@ -170,7 +186,7 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	client := github.NewClient(tc)
 
 	repo := &github.Repository{
-		Name: github.String(p.Name),
+		Name:    github.String(p.Name),
 		Private: github.Bool(false),
 	}
 	_, _, err := client.Repositories.Create("", repo)
