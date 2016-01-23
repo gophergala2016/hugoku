@@ -15,8 +15,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 	githuboauth "golang.org/x/oauth2/github"
 
-	"github.com/gophergala2016/hugoku/store"
 	"github.com/gophergala2016/hugoku/ci"
+	"github.com/gophergala2016/hugoku/store"
 )
 
 // Project is the type of a site
@@ -163,14 +163,12 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 
 func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
-	/*
-		session := sessions.GetSession(r)
-		_, err := session.Get("username")
-			user, err := store.GetUser(username)
-			if err != nil {
-				log.Fatal(err)
-			}
-	*/
+	session := sessions.GetSession(r)
+	username := session.Get("username")
+	user, err := store.GetUser(username.(string))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	projectName := r.PostFormValue("name")
 
