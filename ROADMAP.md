@@ -19,7 +19,7 @@ This is a high level list of features the project needs to accomplish, a.k.a our
 * An user also sees a list of projects with a button to force the build.
 * An user can clik on a project to see the details 
 
-* GET /project/:id: 
+* GET /project/id 
 * Shows the project and the build history 
 
 ## Backend
@@ -31,7 +31,7 @@ This is a high level list of features the project needs to accomplish, a.k.a our
 	* Generates the final build ( the static files ) 
 	* Publishes the results
 
-* POST /project/:id/build builds the project
+* POST /project/id/build builds the project
 	
 ## CI
 
