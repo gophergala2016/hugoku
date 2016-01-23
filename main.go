@@ -60,10 +60,8 @@ func Serve() {
 	router.GET("/auth/login", githubLoginHandler)
 	router.GET("/auth/logout", githubLogoutHandler)
 	router.GET("/auth/callback", githubCallbackHandler)
-	router.GET("/project/:id", getProjectHandler)
-	router.POST("/project", postProjectHandler)
-	//router.GET("/v1/projects/:id", getProjectHandler)
-	//router.POST("/v1/projects", postProjectHandler)
+	router.GET("/v1/projects/:id", getProjectHandler)
+	router.POST("/v1/projects", postProjectHandler)
 	router.GET("/about", About)
 	router.GET("/faq", FAQ)
 
@@ -158,14 +156,15 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 
 func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
-	/*
-		session := sessions.GetSession(r)
-		_, err := session.Get("username")
-			user, err := store.GetUser(username)
-			if err != nil {
-				log.Fatal(err)
-			}
-	*/
+	log.Println("postProjectHandler")
+	session := sessions.GetSession(r)
+	username := session.Get("username")
+	log.Println("Recovering user data")
+	user, err := store.GetUser(username.(string))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println(user)
 
 	projectName := r.PostFormValue("name")
 	fmt.Println(projectName)
@@ -189,7 +188,7 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		Name:    github.String(p.Name),
 		Private: github.Bool(false),
 	}
-	_, _, err := client.Repositories.Create("", repo)
+	_, _, err = client.Repositories.Create("", repo)
 
 	if err != nil {
 		log.Printf("Error while trying to create repo: %s", err)
