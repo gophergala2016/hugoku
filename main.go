@@ -14,6 +14,8 @@ import (
 	"github.com/google/go-github/github"
 	"github.com/julienschmidt/httprouter"
 	githuboauth "golang.org/x/oauth2/github"
+
+	"github.com/gophergala2016/hugoku/store"
 )
 
 // random string for oauth2 API calls to protect against CSRF
@@ -128,6 +130,10 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+
+	var u store.User
+	u.Username = *user.Login
+	err = store.SaveUser(u)
 
 	session := sessions.GetSession(r)
 	session.Set("username", *user.Login)

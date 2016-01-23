@@ -1,15 +1,34 @@
 package store
 
-type Repo struct {
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+)
+
+// Project type
+type Project struct {
 	Name string
 }
 
+// User type
 type User struct {
 	Username string
-	Repos    []Repo
+	Projects []Project
 }
 
-// GetAll return all repos from an user
-func GetUser() (user User, error err) {
+// GetUser returns an user info
+func GetUser() (user User, err error) {
 	return user, err
+}
+
+// SaveUser saves user info
+func SaveUser(user User) error {
+	b, err := json.Marshal(user)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ioutil.WriteFile("./data/"+user.Username+".json", b, 0644)
+	return err
 }
