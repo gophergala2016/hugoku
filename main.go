@@ -16,9 +16,9 @@ import (
 	githuboauth "golang.org/x/oauth2/github"
 )
 
-// OAuthRandomCSRFString random string for oauth2 API calls to protect against CSRF
+// random string for oauth2 API calls to protect against CSRF
 // TODO: make it random
-const OAuthRandomCSRFString = "FenaeTaini5thu5eimohpeer1ear5m"
+const OAUTH_RANDOM_CSRF_STRING = "FenaeTaini5thu5eimohpeer1ear5m"
 
 func main() {
 	Serve()
@@ -87,7 +87,7 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func githubLoginHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	log.Println("githubLoginHandler")
 
-	url := oauthConf.AuthCodeURL(OAuthRandomCSRFString, oauth2.AccessTypeOnline)
+	url := oauthConf.AuthCodeURL(OAUTH_RANDOM_CSRF_STRING, oauth2.AccessTypeOnline)
 	log.Println("Redirecting the user to github login")
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
@@ -102,8 +102,8 @@ func githubLogoutHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	log.Println("githubCallbackHandler")
 	state := r.FormValue("state")
-	if state != OAuthRandomCSRFString {
-		log.Printf("invalid oauth state, expected '%s', got '%s'\n", OAuthRandomCSRFString, state)
+	if state != OAUTH_RANDOM_CSRF_STRING {
+		log.Printf("invalid oauth state, expected '%s', got '%s'\n", OAUTH_RANDOM_CSRF_STRING, state)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
