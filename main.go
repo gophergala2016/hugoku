@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"text/template"
+	"encoding/json"
 
 	"golang.org/x/oauth2"
 
@@ -16,6 +18,14 @@ import (
 	githuboauth "golang.org/x/oauth2/github"
 
 	"github.com/gophergala2016/hugoku/store"
+)
+
+type (
+  Project struct {
+    Name   string `json:"name"`
+    Username string `json:"username"`
+    Token    string `json:"token"`
+  }
 )
 
 // random string for oauth2 API calls to protect against CSRF
@@ -50,7 +60,8 @@ func Serve() {
 	router.GET("/auth/login", githubLoginHandler)
 	router.GET("/auth/logout", githubLogoutHandler)
 	router.GET("/auth/callback", githubCallbackHandler)
-	router.GET("/project/:id", getProjectHandler)
+	router.GET("/v1/projects/:id", getProjectHandler)
+	router.POST("/v1/projects", postProjectHandler)
 	router.GET("/about", About)
 	router.GET("/faq", FAQ)
 
@@ -140,6 +151,35 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 
 	log.Printf("Logged in as GitHub user: %s\n", *user.Login)
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+}
+
+func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	p := Project{}
+
+	json.NewDecoder(r.Body).Decode(&p)
+
+	pj, _ := json.Marshal(p)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: p.Token},
+	)
+	tc := oauth2.NewClient(oauth2.NoContext, ts)
+	client := github.NewClient(tc)
+
+	repo := &github.Repository{
+		Name: github.String(p.Name),
+		Private: github.Bool(false),
+	}
+	_, _, err := client.Repositories.Create("", repo)
+
+	if err != nil {
+		log.Printf("Error while trying to create repo: %s", err)
+	}
+
+	fmt.Fprintf(w, "%s", pj)
 }
 
 // About shows info about the project, team  etc ...
