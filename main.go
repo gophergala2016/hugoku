@@ -146,6 +146,7 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 	var u store.User
 	u.Username = *user.Login
 	u.Token = *token
+	u.AvatarURL = *user.AvatarURL
 	err = store.SaveUser(u)
 
 	session := sessions.GetSession(r)

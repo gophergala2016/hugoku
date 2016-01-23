@@ -15,9 +15,10 @@ type Project struct {
 
 // User type
 type User struct {
-	Username string
-	Token    oauth2.Token
-	Projects []Project
+	Username  string
+	Token     oauth2.Token
+	AvatarURL string
+	Projects  []Project
 }
 
 // GetUser returns an user info
