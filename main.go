@@ -84,6 +84,7 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 }
 
+// githubLoginHandler redirects the user to github to handle the Oauth2 authentication
 func githubLoginHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	log.Println("githubLoginHandler")
 
@@ -148,7 +149,7 @@ func About(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func FAQ(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	t, err := template.ParseFiles("templates/faq.html")
 	if err != nil {
-		log.Fatal("Error parsing the about page template")
+		log.Fatal("Error parsing the FAQ page template")
 	}
 	t.Execute(w, nil)
 }
