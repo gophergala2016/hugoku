@@ -21,7 +21,7 @@ deps: dev-deps
 	go get github.com/google/go-github/github
 	go get github.com/codegangsta/negroni
 	go get github.com/phyber/negroni-gzip/gzip
-	go get github.com/goincremental/negroni-session
+	go get github.com/goincremental/negroni-sessions
 
 dev-deps:
 	go get github.com/golang/lint/golint
