@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello hugoku!")
 	Serve()
 }
 
@@ -19,6 +18,8 @@ func Serve() {
 
 	router := httprouter.New()
 	router.GET("/", Index)
+	router.GET("/about", About)
+	router.GET("/faq", FAQ)
 	router.GET("/login", GithubLogin)
 	router.GET("/project/:id", GetProject)
 
@@ -28,10 +29,27 @@ func Serve() {
 // Index is the Hugoku home page handler will redirect a non logged user to do the loging with Github
 // or show a list of projectst and a form to add a project to a logged user,
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	//fmt.Fprint(w, "Hugoku home page!\n")
 	t, err := template.ParseFiles("templates/index.html")
 	if err != nil {
 		log.Fatal("Error parsing the home page template")
+	}
+	t.Execute(w, nil)
+}
+
+// About shows info about the project, team  etc ...
+func About(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	t, err := template.ParseFiles("templates/about.html")
+	if err != nil {
+		log.Fatal("Error parsing the about page template")
+	}
+	t.Execute(w, nil)
+}
+
+// FAQ shows frequently asqued questions about the project, team  etc ...
+func FAQ(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	t, err := template.ParseFiles("templates/faq.html")
+	if err != nil {
+		log.Fatal("Error parsing the about page template")
 	}
 	t.Execute(w, nil)
 }
