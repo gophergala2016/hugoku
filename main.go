@@ -207,10 +207,10 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 // repoExists checks if a repo exists
 func repoExists(client *github.Client, username string, projectName string) bool {
 	repos, _, _ := client.Repositories.List("", nil)
-	project_repo := username + "/" + projectName
-	log.Println(project_repo)
+	projectRepo := username + "/" + projectName
+	log.Println(projectRepo)
 	for _, b := range repos {
-		if *b.FullName == project_repo {
+		if *b.FullName == projectRepo {
 			log.Println("Github repo already exists, skipping...")
 			return true
 		}
