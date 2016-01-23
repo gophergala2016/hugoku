@@ -67,7 +67,9 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	session := sessions.GetSession(r)
 	username := session.Get("username")
 
-	if username == "" {
+	log.Println("------", username)
+
+	if username == nil {
 		t, err := template.ParseFiles("templates/index.html")
 		if err != nil {
 			log.Fatal("Error parsing the index page template")
@@ -92,7 +94,7 @@ func githubLoginHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 
 func githubLogoutHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	session := sessions.GetSession(r)
-	session.Delet("username")
+	session.Delete("username")
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
