@@ -94,7 +94,13 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		if err != nil {
 			log.Fatal("Error parsing the home page template")
 		}
-		t.Execute(w, nil)
+		log.Println("Recovering user data")
+		user, err := store.GetUser(username.(string))
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println(user)
+		t.Execute(w, user)
 	}
 }
 
@@ -146,6 +152,7 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 	var u store.User
 	u.Username = *user.Login
 	u.Token = *token
+	u.AvatarURL = *user.AvatarURL
 	err = store.SaveUser(u)
 
 	session := sessions.GetSession(r)
