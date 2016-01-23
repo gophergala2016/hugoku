@@ -51,6 +51,7 @@ func Serve() {
 	router.GET("/auth/logout", githubLogoutHandler)
 	router.GET("/auth/callback", githubCallbackHandler)
 	router.GET("/project/:id", getProjectHandler)
+	router.POST("/project", postProjectHandler)
 	router.GET("/about", About)
 	router.GET("/faq", FAQ)
 
@@ -133,6 +134,7 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 
 	var u store.User
 	u.Username = *user.Login
+	u.Token = *token
 	err = store.SaveUser(u)
 
 	session := sessions.GetSession(r)
@@ -158,6 +160,23 @@ func FAQ(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		log.Fatal("Error parsing the FAQ page template")
 	}
 	t.Execute(w, nil)
+}
+
+// postProjectHandler handles the creation of a new Hugoku project
+func postProjectHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	session := sessions.GetSession(r)
+	username := session.Get("username")
+	user, err := store.GetUser()
+	if err != nil {
+		log.Printf("Couldn't recover user!!!")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	projectName := r.PostFormValue("name")
+	log.Printf("username: %s, token: %v, projectName: %s\n", username, user.Token, projectName)
+	// TODO: Handle the project creation
+
 }
 
 // getProjectHandler is the Hugoku project page handdler and shows the project and the build history.

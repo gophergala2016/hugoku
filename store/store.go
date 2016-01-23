@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+
+	"golang.org/x/oauth2"
 )
 
 // Project type
@@ -14,6 +16,7 @@ type Project struct {
 // User type
 type User struct {
 	Username string
+	Token    oauth2.Token
 	Projects []Project
 }
 
