@@ -20,15 +20,14 @@ import (
 	"github.com/gophergala2016/hugoku/store"
 )
 
-type (
-	Project struct {
-		Name     string `json:"name"`
-		Username string `json:"username"`
-		Token    string `json:"token"`
-	}
-)
+// Project is the type of a site
+type Project struct {
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Token    string `json:"token"`
+}
 
-// random string for oauth2 API calls to protect against CSRF
+// OAuthRandomCSRString random string for oauth2 API calls to protect against CSRF
 // TODO: make it random
 const OAuthRandomCSRString = "FenaeTaini5thu5eimohpeer1ear5m"
 
