@@ -10,8 +10,9 @@ import (
 
 // Project type
 type Project struct {
-	Name string
-	Icon string
+	Name   string
+	Icon   string
+	Builds []BuildInfo
 }
 
 // User type
@@ -20,6 +21,12 @@ type User struct {
 	Token     oauth2.Token
 	AvatarURL string
 	Projects  []Project
+}
+
+// BuildInfo type
+type BuildInfo struct {
+	BuildTime   Date
+	BuildStatus string
 }
 
 // GetUser returns an user info
