@@ -8,6 +8,7 @@ import (
 	"os/exec"
 )
 
+// Step is a task to perform during the deployment
 type Step struct {
 	Command string
 	Args    []string
@@ -15,7 +16,6 @@ type Step struct {
 	Stderr  string
 }
 
-var commands []Step
 var listCommands []string
 
 func (s *Step) executeCommand() error {
@@ -50,64 +50,70 @@ func (s *Step) executeCommand() error {
 	return err
 }
 
-func initCommandsNewSite(name string) []Step {
-
-	commands := append(commands, Step{
-		Command: "git",
-		Args:    []string{"pull", name},
-		Stdout:  "",
-		Stderr:  "",
-	})
-
-	commands = append(commands, Step{
-		Command: "hugo",
-		Args:    []string{"-s", name},
-		Stdout:  "",
-		Stderr:  "",
-	})
-
-	return commands
-}
-
-func initCommandsExistingSite(name string) []Step {
-	commands := append(commands, Step{
-		Command: "git",
-		Args:    []string{"pull", "origin", "master"},
-		Stdout:  "",
-		Stderr:  "",
-	})
-
-	commands = append(commands, Step{
-		Command: "hugo",
-		Stdout:  "",
-		Stderr:  "",
-	})
-
-	return commands
-}
-
-func Build(name string) error {
+func initCommandsNewSite(username string, name string, path string) []Step {
 	var commands []Step
-	if _, err := os.Stat("/tmp/hugosites/" + name); os.IsNotExist(err) {
 
-		commands = initCommandsNewSite(name)
-		// commandsForNewSite
-		// path/to/whatever does not exist
+	commands = append(commands, Step{
+		Command: "hugo",
+		Args:    []string{"new", "site", path},
+		Stdout:  "",
+		Stderr:  "",
+	})
+
+	commands = append(commands, Step{
+		Command: "git",
+		Args:    []string{"clone", "git@github.com:hbpasti/heather-hugo.git", path + "/themes/heather-hugo"},
+		Stdout:  "",
+		Stderr:  "",
+	})
+
+	commands = append(commands, Step{
+		Command: "hugo",
+		Args:    []string{"-s", path, "--theme=heather-hugo"},
+		Stdout:  "",
+		Stderr:  "",
+	})
+
+	return commands
+}
+
+func initCommandsExistingSite(username string, name string, path string) []Step {
+	var commands []Step
+	/*
+		commands = append(commands, Step{
+			Command: "git",
+			Args:    []string{"pull", "origin", "master"},
+			Stdout:  "",
+			Stderr:  "",
+		})
+
+		commands = append(commands, Step{
+			Command: "hugo",
+			Stdout:  "",
+			Stderr:  "",
+		})
+	*/
+	return commands
+}
+
+// Build compiles a project
+func Build(username string, name string, path string) error {
+	var commands []Step
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		commands = initCommandsNewSite(username, name, path)
 	} else {
-		os.Chdir("/tmp/hugosites/" + name)
-		commands = initCommandsExistingSite(name)
-
-		// commandsForExisting site
+		commands = initCommandsExistingSite(username, name, path)
 	}
-	wd, _ := os.Getwd()
+
 	for i := range commands {
-
 		err := commands[i].executeCommand()
-
+		fmt.Println("Command")
+		fmt.Println(commands[i].Command, commands[i].Args)
 		fmt.Println("Stdout")
 		fmt.Println(commands[i].Stdout)
 		fmt.Println("Stderr")
 		fmt.Println(commands[i].Stderr)
+		fmt.Println("-----")
 		if err != nil {
 			return err
 		}
@@ -116,6 +122,9 @@ func Build(name string) error {
 	return nil
 }
 
-func Deploy() {
-
+// Deploy deploys a project
+func Deploy(username string, name string) (path string, err error) {
+	path = fmt.Sprintf("./repos/%s/%s", username, name)
+	err = Build(username, name, path)
+	return path, err
 }

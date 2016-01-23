@@ -12,6 +12,8 @@ lint:
 	golint ./...
 
 clean:
+	rm -rf repos/*
+	rm -rf data/*
 	go clean
 
 deps: dev-deps
