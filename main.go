@@ -94,7 +94,13 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		if err != nil {
 			log.Fatal("Error parsing the home page template")
 		}
-		t.Execute(w, nil)
+		log.Println("Recovering user data")
+		user, err := store.GetUser(username.(string))
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println(user)
+		t.Execute(w, user)
 	}
 }
 
