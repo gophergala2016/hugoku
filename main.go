@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -18,6 +16,7 @@ import (
 	githuboauth "golang.org/x/oauth2/github"
 
 	"github.com/gophergala2016/hugoku/store"
+	"github.com/gophergala2016/hugoku/ci"
 )
 
 // Project is the type of a site
@@ -174,34 +173,48 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	*/
 
 	projectName := r.PostFormValue("name")
-	fmt.Println(projectName)
-
-	p := Project{}
-
-	json.NewDecoder(r.Body).Decode(&p)
-
-	pj, _ := json.Marshal(p)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
 
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: p.Token},
+		&oauth2.Token{AccessToken: user.Token.AccessToken},
 	)
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
 	client := github.NewClient(tc)
 
-	repo := &github.Repository{
-		Name:    github.String(p.Name),
-		Private: github.Bool(false),
-	}
-	_, _, err := client.Repositories.Create("", repo)
+	log.Printf("Creating %s...", projectName)
+
+	_, err = ci.Deploy(username.(string), projectName)
 
 	if err != nil {
-		log.Printf("Error while trying to create repo: %s", err)
+		log.Fatalf("Error while trying to create project: %s", err)
 	}
 
-	fmt.Fprintf(w, "%s", pj)
+	if !repoExists(client, username.(string), projectName) {
+		repo := &github.Repository{
+			Name:    github.String(projectName),
+			Private: github.Bool(false),
+		}
+		_, _, err = client.Repositories.Create("", repo)
+
+		if err != nil {
+			log.Fatalf("Error while trying to create repo: %s", err)
+		}
+	}
+
+	// TODO: Make git repo to push after
+}
+
+// repoExists checks if a repo exists
+func repoExists(client *github.Client, username string, projectName string) bool {
+	repos, _, _ := client.Repositories.List("", nil)
+	project_repo := username + "/" + projectName
+	log.Println(project_repo)
+	for _, b := range repos {
+		if *b.FullName == project_repo {
+			log.Println("Github repo already exists, skipping...")
+			return true
+		}
+	}
+	return false
 }
 
 // About shows info about the project, team  etc ...
