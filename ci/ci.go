@@ -60,6 +60,20 @@ func initCommandsNewSite(username string, name string, path string) []Step {
 		Stderr:  "",
 	})
 
+	commands = append(commands, Step{
+		Command: "git",
+		Args:    []string{"clone", "git@github.com:hbpasti/heather-hugo.git", path + "/themes/heather-hugo"},
+		Stdout:  "",
+		Stderr:  "",
+	})
+
+	commands = append(commands, Step{
+		Command: "hugo",
+		Args:    []string{"-s", path, "--theme=heather-hugo"},
+		Stdout:  "",
+		Stderr:  "",
+	})
+
 	return commands
 }
 
@@ -100,7 +114,7 @@ func Build(username string, name string, path string) error {
 	for i := range commands {
 		err := commands[i].executeCommand()
 		fmt.Println("Command")
-		fmt.Println(commands[i].Command)
+		fmt.Println(commands[i].Command, commands[i].Args)
 		fmt.Println("Stdout")
 		fmt.Println(commands[i].Stdout)
 		fmt.Println("Stderr")
