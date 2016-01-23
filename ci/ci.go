@@ -125,8 +125,6 @@ func Build(username string, name string, path string) error {
 // Deploy deploys a project
 func Deploy(username string, name string) (path string, err error) {
 	path = fmt.Sprintf("./repos/%s/%s", username, name)
-
 	err = Build(username, name, path)
-
 	return path, err
 }
