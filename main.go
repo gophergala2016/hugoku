@@ -134,11 +134,11 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 
 	var u store.User
 	u.Username = *user.Login
+	u.Token = *token
 	err = store.SaveUser(u)
 
 	session := sessions.GetSession(r)
 	session.Set("username", *user.Login)
-	session.Set("token", *token)
 
 	log.Printf("Logged in as GitHub user: %s\n", *user.Login)
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
@@ -166,9 +166,15 @@ func FAQ(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func postProjectHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	session := sessions.GetSession(r)
 	username := session.Get("username")
-	token := session.Get("token")
+	user, err := store.GetUser()
+	if err != nil {
+		log.Printf("Couldn't recover user!!!")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
 	projectName := r.PostFormValue("name")
-	log.Printf("username: %s, token: %s, projectName: %s\n", username, token, projectName)
+	log.Printf("username: %s, token: %v, projectName: %s\n", username, user.Token, projectName)
 	// TODO: Handle the project creation
 
 }
