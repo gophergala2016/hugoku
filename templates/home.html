@@ -59,9 +59,9 @@
                                 {{else}}
                 <a class="pull-left" href="/project/{{.Name}}"><img class="media-object" src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" alt="{{.Name}}" height="64" width="64"></a>
                 {{end}}
-								<div class="media-body">
+								<div class="media-body {{.LastBuildInfo.BuildStatus}}">
                   <a href="/project/{{.Name}}"><h4 class="media-heading">{{.Name}}</h4></a>
-									Last updated: <a href="/projects/{{.Name}}">putdatehere</a>
+									Last updated: <a href="/projects/{{.Name}}">{{.LastBuildInfo.BuildTime.Format "Jan 2 15:04:05 2006"}}</a>
 								</div>
 							</li>
 							{{end}}

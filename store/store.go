@@ -12,9 +12,10 @@ import (
 
 // Project type
 type Project struct {
-	Name       string
-	Icon       string
-	BuildsInfo []BuildInfo
+	Name          string
+	Icon          string
+	LastBuildInfo BuildInfo
+	BuildsInfo    []BuildInfo
 }
 
 // User type
