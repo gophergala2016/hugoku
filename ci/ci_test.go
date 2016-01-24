@@ -6,7 +6,7 @@ import (
 )
 
 func TestBuild(t *testing.T) {
-	err := ci.Build("a")
+	err := ci.Build("josgilmo", "example-site", "josgilmo/example-site")
 	if err != nil {
 		t.Error("It shuild be nil")
 	}
