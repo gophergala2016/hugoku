@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"golang.org/x/oauth2"
 	"io/ioutil"
 	"os"
 	"time"
+
+	"golang.org/x/oauth2"
 )
 
 // Project type
@@ -34,6 +35,9 @@ type BuildInfo struct {
 	BuildTime     time.Time
 	BuildDuration time.Duration
 	BuildStatus   string
+	BuildLog      string
+	BuildErrorLog string
+	BuildPath     string
 }
 
 // GetUser returns an user info

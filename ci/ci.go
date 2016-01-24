@@ -6,6 +6,9 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"time"
+
+	"github.com/gophergala2016/hugoku/store"
 )
 
 // Step is a task to perform during the deployment
@@ -104,34 +107,40 @@ func initCommandsExistingSite(username string, name string, path string) []Step 
 }
 
 // Build compiles a project
-func Build(username string, name string, path string) error {
+func Build(username string, name string, path string) (store.BuildInfo, error) {
 	var commands []Step
+	var buildInfo = store.BuildInfo{BuildPath: path}
+	buildInfo.BuildTime = time.Now()
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		commands = initCommandsNewSite(username, name, path)
 	} else {
 		commands = initCommandsExistingSite(username, name, path)
 	}
-
 	for i := range commands {
 		err := commands[i].executeCommand()
-		fmt.Println("Command")
-		fmt.Println(commands[i].Command, commands[i].Args)
-		fmt.Println("Stdout")
-		fmt.Println(commands[i].Stdout)
-		fmt.Println("Stderr")
-		fmt.Println(commands[i].Stderr)
-		fmt.Println("-----")
+		log.Println("Command")
+		log.Println(commands[i].Command, commands[i].Args)
+		log.Println("Stdout")
+		log.Println(commands[i].Stdout)
+		buildInfo.BuildLog += commands[i].Stdout
+		log.Println("Stderr")
+		log.Println(commands[i].Stderr)
+		buildInfo.BuildErrorLog += commands[i].Stderr
+		log.Println("-----")
 		if err != nil {
-			return err
+			buildInfo.BuildDuration = time.Since(buildInfo.BuildTime)
+			buildInfo.BuildStatus = "fail"
+			return buildInfo, err
 		}
 	}
-
-	return nil
+	buildInfo.BuildDuration = time.Since(buildInfo.BuildTime)
+	buildInfo.BuildStatus = "ok"
+	return buildInfo, nil
 }
 
 // Deploy deploys a project
-func Deploy(username string, name string) (path string, err error) {
-	path = fmt.Sprintf("./repos/%s/%s", username, name)
-	err = Build(username, name, path)
-	return path, err
+func Deploy(username string, name string) (store.BuildInfo, error) {
+	path := fmt.Sprintf("./repos/%s/%s", username, name)
+	buildInfo, err := Build(username, name, path)
+	return buildInfo, err
 }
