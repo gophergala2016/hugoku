@@ -26,67 +26,57 @@ func (s *Step) ExecuteCommand() error {
 	stdout, err := cmd.StdoutPipe()
 	buf := new(bytes.Buffer)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-
 	stderr, err := cmd.StderrPipe()
 	bufErr := new(bytes.Buffer)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-
 	if err := cmd.Start(); err != nil {
-		log.Fatal(err)
+		return err
 	}
-
 	_, err = buf.ReadFrom(stdout)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	_, err = bufErr.ReadFrom(stderr)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	_, err = bufErr.ReadFrom(stderr)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-
 	if err := cmd.Wait(); err != nil {
-		log.Fatal(err)
+		return err
 	}
-
 	s.Stdout = buf.String()
 	s.Stderr = bufErr.String()
-
 	return err
 }
 
 func initCommandsNewSite(username string, name string, path string) []Step {
-	var commands []Step
-
-	commands = append(commands, Step{
-		Command: "hugo",
-		Args:    []string{"new", "site", path},
-		Stdout:  "",
-		Stderr:  "",
-	})
-
-	commands = append(commands, Step{
-		Command: "git",
-		Args:    []string{"clone", "https://github.com/hbpasti/heather-hugo.git", path + "/themes/heather-hugo"},
-		Stdout:  "",
-		Stderr:  "",
-	})
-
-	commands = append(commands, Step{
-		Command: "hugo",
-		Args:    []string{"-s", path, "--theme=heather-hugo"},
-		Stdout:  "",
-		Stderr:  "",
-	})
-
-	return commands
+	return []Step{
+		Step{
+			Command: "hugo",
+			Args:    []string{"new", "site", path},
+			Stdout:  "",
+			Stderr:  "",
+		},
+		Step{
+			Command: "git",
+			Args:    []string{"clone", "https://github.com/hbpasti/heather-hugo.git", path + "/themes/heather-hugo"},
+			Stdout:  "",
+			Stderr:  "",
+		},
+		Step{
+			Command: "hugo",
+			Args:    []string{"-s", path, "--theme=heather-hugo"},
+			Stdout:  "",
+			Stderr:  "",
+		},
+	}
 }
 
 func initCommandsExistingSite(username string, name string, path string) []Step {
