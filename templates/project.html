@@ -66,7 +66,7 @@
               <li>
                 <a href="/">Projects</a>
               </li>
-              <li class="active">Project Name</li>
+							<li class="active">Project {{.Name}}</li>
             </ul>
           </div>
         </div>
@@ -79,16 +79,10 @@
             <img src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" class="img-responsive" width="300">
           </div>
           <div class="col-md-8">
-            <h1>Project Name</h1>
+						<h1>Project {{.Name}}</h1>
             <h3>A subtitle</h3>
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-              ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis
-              dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies
-              nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
-              Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In
-              enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum
-              felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus
-              elementum semper nisi.</p>
+						<p>{{.Description}}
+              </p>
           </div>
         </div>
       </div>
@@ -100,51 +94,20 @@
             <hr/>
             <h2>Project Builds</h2>
             <ul class="media-list">
-              <li class="media">
+							{{range .BuildsInfo}}
+							<li class="media {{.BuildStatus}}">
                 <a class="pull-left" href="#"><img class="media-object" src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" height="64" width="64"></a>
                 <div class="media-body">
-                  <h4 class="media-heading">Media heading</h4>
+									<span class="pull-right build-status">{{.BuildStatus}}</span>
+									<h4 class="media-heading build-datetime">{{.BuildTime.Format "Jan 2 15:04:05 2006"}}</h4>
+									<span class="pull-right build-duration">{{.BuildDuration}}</span>
+
                   <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
                     ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at,
                     tempus viverra turpis.</p>
                 </div>
               </li>
-              <li class="media">
-                <a class="pull-left" href="#"><img class="media-object" src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" height="64" width="64"></a>
-                <div class="media-body">
-                  <h4 class="media-heading">Media heading</h4>
-                  <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                    ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at,
-                    tempus viverra turpis.</p>
-                </div>
-              </li>
-              <li class="media">
-                <a class="pull-left" href="#"><img class="media-object" src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" height="64" width="64"></a>
-                <div class="media-body">
-                  <h4 class="media-heading">Media heading</h4>
-                  <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                    ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at,
-                    tempus viverra turpis.</p>
-                </div>
-              </li>
-              <li class="media">
-                <a class="pull-left" href="#"><img class="media-object" src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" height="64" width="64"></a>
-                <div class="media-body">
-                  <h4 class="media-heading">Media heading</h4>
-                  <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                    ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at,
-                    tempus viverra turpis.</p>
-                </div>
-              </li>
-              <li class="media">
-                <a class="pull-left" href="#"><img class="media-object" src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" height="64" width="64"></a>
-                <div class="media-body">
-                  <h4 class="media-heading">Media heading</h4>
-                  <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                    ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at,
-                    tempus viverra turpis.</p>
-                </div>
-              </li>
+							{{end}}
             </ul>
           </div>
         </div>
