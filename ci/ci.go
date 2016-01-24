@@ -3,6 +3,7 @@ package ci
 import (
 	"bytes"
 	"fmt"
+
 	"log"
 	"os"
 	"os/exec"
@@ -118,8 +119,7 @@ func Build(username string, name string, path string) (store.BuildInfo, error) {
 	}
 	for i := range commands {
 		err := commands[i].executeCommand()
-		log.Println("Command")
-		log.Println(commands[i].Command, commands[i].Args)
+		log.Println("Command:", commands[i].Command, commands[i].Args)
 		log.Println("Stdout")
 		log.Println(commands[i].Stdout)
 		buildInfo.BuildLog += commands[i].Stdout
