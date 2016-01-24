@@ -192,7 +192,8 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		buildStatus = "fail"
 	}
 
-	project := store.Project{Name: projectName, BuildsInfo: []store.BuildInfo{store.BuildInfo{BuildTime: time.Now(), BuildStatus: buildStatus}}}
+	buildInfo := store.BuildInfo{BuildTime: time.Now(), BuildStatus: buildStatus}
+	project := store.Project{Name: projectName, BuildsInfo: []store.BuildInfo{buildInfo}, LastBuildInfo: buildInfo}
 	user.Projects = append(user.Projects, project)
 
 	err = store.SaveUser(user)
