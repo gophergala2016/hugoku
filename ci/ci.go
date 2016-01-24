@@ -20,7 +20,8 @@ type Step struct {
 	Stderr  string
 }
 
-func (s *Step) executeCommand() error {
+// ExecuteCommand ...
+func (s *Step) ExecuteCommand() error {
 	cmd := exec.Command(s.Command, s.Args...)
 	stdout, err := cmd.StdoutPipe()
 	buf := new(bytes.Buffer)
@@ -118,7 +119,7 @@ func Build(username string, name string, path string) (store.BuildInfo, error) {
 		commands = initCommandsExistingSite(username, name, path)
 	}
 	for i := range commands {
-		err := commands[i].executeCommand()
+		err := commands[i].ExecuteCommand()
 		log.Println("Command:", commands[i].Command, commands[i].Args)
 		log.Println("Stdout")
 		log.Println(commands[i].Stdout)
