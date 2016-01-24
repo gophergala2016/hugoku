@@ -14,6 +14,7 @@ import (
 type Project struct {
 	Name          string
 	Icon          string
+	Description   string
 	LastBuildInfo BuildInfo
 	BuildsInfo    []BuildInfo
 }
@@ -29,8 +30,9 @@ type User struct {
 
 // BuildInfo type
 type BuildInfo struct {
-	BuildTime   time.Time
-	BuildStatus string
+	BuildTime     time.Time
+	BuildDuration time.Duration
+	BuildStatus   string
 }
 
 // GetUser returns an user info
