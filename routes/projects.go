@@ -87,7 +87,7 @@ func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	err = store.SaveUser(user)
 
-	//http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 // GetProject is the Hugoku project page handdler and shows the project and the build history.
