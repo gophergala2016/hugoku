@@ -28,6 +28,7 @@ func Serve() {
 	router.GET("/auth/login", routes.GithubLogin)
 	router.GET("/auth/logout", routes.GithubLogout)
 	router.GET("/auth/callback", routes.GithubLoginCallback)
+	router.POST("/project/:id/build", routes.BuildProject)
 	router.GET("/project/:id", routes.GetProject)
 	router.POST("/project", routes.PostProject)
 	router.DELETE("/project/:id", routes.DeleteProject)

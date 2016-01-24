@@ -18,6 +18,15 @@ import (
 	"github.com/gophergala2016/hugoku/util/session"
 )
 
+func getClient(user store.User) *github.Client {
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: user.Token.AccessToken},
+	)
+	tc := oauth2.NewClient(oauth2.NoContext, ts)
+
+	return github.NewClient(tc)
+}
+
 // PostProject ...
 func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	user, err := session.GetUser(r)
@@ -31,11 +40,8 @@ func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 	repoDescription := "Repository for " + projectName + " created by Hugoku"
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: user.Token.AccessToken},
-	)
-	tc := oauth2.NewClient(oauth2.NoContext, ts)
-	client := github.NewClient(tc)
+
+	client := getClient(user)
 
 	log.Printf("Creating %s...", projectName)
 
@@ -83,6 +89,38 @@ func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	err = store.SaveUser(user)
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+// Run a rebuild project
+func BuildProject(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+	user, err := session.GetUser(r)
+	if err != nil {
+		log.Fatal(err)
+	}
+	projectName := ps.ByName("id")
+
+	_, err = ci.Deploy(user.Username, projectName)
+
+	client := getClient(user)
+
+	if repo.Exists(client, user.Username, projectName) {
+		updateRepository(user.Username, projectName)
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func updateRepository(username, projectName string) error {
+
+	wd, _ := os.Getwd()
+	err := os.Chdir(wd + "/repos/" + username + "/" + projectName + "/")
+	cmd.Run("git", []string{"add", "."})
+
+	cmd.Run("git", []string{"push", "--quiet", "-u", "origin", "master"})
+	err = os.Chdir(wd)
+
+	return err
 }
 
 // GetProject is the Hugoku project page handler and shows the project and the build history.
