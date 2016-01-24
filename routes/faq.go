@@ -14,7 +14,10 @@ func FAQ(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		"templates/partials/header.html",
 		"templates/partials/footer.html")
 	if err != nil {
-		log.Fatal("Error parsing the FAQ page template")
+		log.Fatal("Error parsing the FAQ page template: ", err)
 	}
-	t.Execute(w, nil)
+	err = t.Execute(w, nil)
+	if err != nil {
+		log.Fatal("Error executing the FAQ page template: ", err)
+	}
 }
