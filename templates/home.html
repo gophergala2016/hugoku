@@ -53,7 +53,7 @@
 							{{range .Projects}}
                             <hr>
 							<li class="media">
-                                <a href="/project/{{.Name}}/rebuild" class="btn btn-primary pull-right"><i class="fa fa-refresh"></i> Rebuild</a>
+                                <a class="btn btn-primary pull-right btn-rebuild" data-id="{{.Name}}"><i class="fa fa-refresh"></i> Rebuild</a>
                                 {{if .Icon}}
                                     <a class="pull-left" href="/project/{{.Name}}"><img class="media-object" src="{{.Icon}}" alt="{{.Name}}" height="64" width="64"></a>
                                 {{else}}

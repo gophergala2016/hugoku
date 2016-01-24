@@ -41,7 +41,7 @@
 							<li>
 								<a href="/">Projects</a>
 							</li>
-							<li class="active">Project {{.Name}}</li>
+							<li class="active">{{.Name}}</li>
 						</ul>
 					</div>
 				</div>
@@ -62,7 +62,7 @@
 						<div class="container-fluid text-center">
 							<div class="row">
 								<div class="col-md-4">
-									<a id="rebuild_button" class="btn btn-lg btn-primary"><i class="fa fa-refresh"></i> Rebuild the project</a>
+									<a class="btn btn-lg btn-primary btn-rebuild" data-id="{{.Name}}"><i class="fa fa-refresh"></i> Rebuild the project</a>
 								</div>
 								<div class="col-md-4">
 									<a id="delete_project" class="btn btn-lg btn-danger"><i class="fa fa-trash"></i> Delete the project</a>
@@ -120,18 +120,6 @@
 					}
 				});
 			}
-		});
-
-		document.getElementById('rebuild_button').addEventListener('click', function () {
-			$.ajax('/project/{{.Name}}/build', {
-				method: 'POST',
-				success: function () {
-					window.location.reload();
-				},
-				error: function () {
-					alert('There was an error trying to rebuild your project.');
-				}
-			});
 		});
 		</script>
 	</body>
