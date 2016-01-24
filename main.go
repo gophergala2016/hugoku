@@ -228,34 +228,23 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		if err != nil {
 			log.Fatal(err)
 		}
-		cmd := exec.Command("git", []string{"init", "--quiet"}...)
-		err = cmd.Run()
-		if err != nil {
-			log.Fatal(err)
-		}
-		cmd = exec.Command("git", []string{"add", "."}...)
-		err = cmd.Run()
-		if err != nil {
-			log.Fatal(err)
-		}
-		cmd = exec.Command("git", []string{"commit", "-m", "'initial source code'"}...)
-		err = cmd.Run()
-		if err != nil {
-			log.Fatal(err)
-		}
-		cmd = exec.Command("git", []string{"remote", "add", "origin", "git@github.com:" + user.Username + "/" + projectName + ".git"}...)
-		err = cmd.Run()
-		if err != nil {
-			log.Fatal(err)
-		}
-		cmd = exec.Command("git", []string{"push", "--quiet", "-u", "origin", "master"}...)
-		err = cmd.Run()
-		if err != nil {
-			log.Fatal(err)
-		}
+		RunCommand("git", []string{"init", "--quiet"})
+		RunCommand("git", []string{"add", "."})
+		RunCommand("git", []string{"commit", "-m", "'initial source code'"})
+		RunCommand("git", []string{"remote", "add", "origin", "git@github.com:" + user.Username + "/" + projectName + ".git"})
+		RunCommand("git", []string{"push", "--quiet", "-u", "origin", "master"})
 	}
 
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+}
+
+// RunCommand runs a command and handles possible error
+func RunCommand(command string, args []string) {
+	cmd := exec.Command(command, args...)
+	err := cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // repoExists checks if a repo exists
