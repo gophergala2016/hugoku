@@ -13,9 +13,9 @@ import (
 	"github.com/gophergala2016/hugoku/store"
 )
 
-//GithubCalback Called by github after authorization is granted
-func GithubCallback(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	log.Println("GithubCallback")
+//GithubLoginCallback Called by github after authorization is granted
+func GithubLoginCallback(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	log.Println("GithubLoginCallback")
 	state := r.FormValue("state")
 	if state != oauth.RandomString {
 		log.Printf("invalid oauth state, expected '%s', got '%s'\n", oauth.RandomString, state)
