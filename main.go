@@ -63,7 +63,7 @@ func Serve() {
 	router.GET("/auth/callback", githubCallbackHandler)
 	router.GET("/project/:id", getProjectHandler)
 	router.POST("/project", postProjectHandler)
-	router.GET("/about", About)
+	router.GET("/about", routes.About)
 	router.GET("/faq", routes.FAQ)
 
 	// Apply middleware to the router
@@ -263,18 +263,6 @@ func repoExists(client *github.Client, username string, projectName string) bool
 		}
 	}
 	return false
-}
-
-// About shows info about the project, team  etc ...
-func About(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	t, err := template.ParseFiles("templates/about.html",
-		"templates/partials/header.html",
-		"templates/partials/footer.html",
-	)
-	if err != nil {
-		log.Fatal("Error parsing the about page template")
-	}
-	t.Execute(w, nil)
 }
 
 // getProjectHandler is the Hugoku project page handdler and shows the project and the build history.
