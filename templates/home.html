@@ -51,7 +51,7 @@
             <h2><img width="40" height="40" src="{{.AvatarURL}}" alt="{{.Username}}"/> {{.Username}} projects</h2>
 						<ul class="media-list">
 							{{range .Projects}}
-                            <hr> 
+                            <hr>
 							<li class="media">
                                 <a href="/project/{{.Name}}/rebuild" class="btn btn-primary pull-right"><i class="fa fa-refresh"></i> Rebuild</a>
                                 {{if .Icon}}
@@ -61,7 +61,7 @@
                 {{end}}
 								<div class="media-body {{.LastBuildInfo.BuildStatus}}">
                   <a href="/project/{{.Name}}"><h4 class="media-heading">{{.Name}}</h4></a>
-									Last updated: <a href="/projects/{{.Name}}">{{.LastBuildInfo.BuildTime.Format "Jan 2 15:04:05 2006"}}</a>
+									Last updated: <a href="/project/{{.Name}}">{{.LastBuildInfo.BuildTime.Format "Jan 2 15:04:05 2006"}}</a>
 								</div>
 							</li>
 							{{end}}
