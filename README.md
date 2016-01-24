@@ -1,5 +1,7 @@
 ![](img/logo.jpg)
 
+[![License][License-Image]][License-Url] 
+
 # Hugoku
 Hugoku is an open and automated PAAS solution to host Hugo static websites.
 
@@ -31,3 +33,6 @@ Just run it:
 ```sh
 ./hugoku
 ```
+
+[License-Url]: http://opensource.org/licenses/MIT
+[License-Image]: https://img.shields.io/npm/l/express.svg
