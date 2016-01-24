@@ -80,7 +80,7 @@ func initCommandsNewSite(username string, name string, path string) []Step {
 }
 
 func initCommandsExistingSite(username string, name string, path string) []Step {
-	var commands []Step
+	return []Step{}
 	/*
 		commands = append(commands, Step{
 			Command: "git",
@@ -95,7 +95,6 @@ func initCommandsExistingSite(username string, name string, path string) []Step 
 			Stderr:  "",
 		})
 	*/
-	return commands
 }
 
 // Build compiles a project
