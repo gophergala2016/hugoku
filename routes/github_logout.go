@@ -7,6 +7,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// GithubLogout ...
 func GithubLogout(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	session := sessions.GetSession(r)
 	session.Delete("username")
