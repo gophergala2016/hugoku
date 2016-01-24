@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/goincremental/negroni-sessions"
+	"github.com/julienschmidt/httprouter"
 
 	"github.com/gophergala2016/hugoku/store"
 )
 
-// Index is the Hugoku home page handler will redirect a non logged user to do the loging with Github
+// Index is the Hugoku home page handler will redirect a non logged user to do the logging with Github
 // or show a list of projectst and a form to add a project to a logged user,
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 

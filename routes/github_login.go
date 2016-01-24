@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"golang.org/x/oauth2"
 	"github.com/julienschmidt/httprouter"
+	"golang.org/x/oauth2"
 
 	"github.com/gophergala2016/hugoku/util/oauth"
 )
