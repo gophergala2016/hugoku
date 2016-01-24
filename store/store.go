@@ -2,6 +2,7 @@ package store
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"time"
@@ -49,4 +50,14 @@ func SaveUser(user User) error {
 	}
 	err = ioutil.WriteFile("./data/"+user.Username+".json", b, 0644)
 	return err
+}
+
+// GetProject gets a project from the user by it's name
+func (u User) GetProject(name string) (*Project, error) {
+	for _, p := range u.Projects {
+		if p.Name == name {
+			return &p, nil
+		}
+	}
+	return nil, errors.New("Project not found")
 }
