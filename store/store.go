@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"time"
-
 	"golang.org/x/oauth2"
+	"io/ioutil"
+	"os"
+	"time"
 )
 
 // Project type
@@ -37,11 +37,15 @@ type BuildInfo struct {
 
 // GetUser returns an user info
 func GetUser(username string) (user User, err error) {
-	buf, err := ioutil.ReadFile("./data/" + username + ".json")
-	err = json.Unmarshal(buf, &user)
-	if err != nil {
-		return user, err
+	path := "./data/" + username + ".json"
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		buf, err := ioutil.ReadFile(path)
+		err = json.Unmarshal(buf, &user)
+		if err != nil {
+			return user, err
+		}
 	}
+
 	return user, err
 }
 
