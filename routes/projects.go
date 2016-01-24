@@ -20,7 +20,6 @@ import (
 
 // PostProject ...
 func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var buildStatus = "ok"
 	user, err := session.GetUser(r)
 	if err != nil {
 		log.Fatal(err)
@@ -39,16 +38,12 @@ func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	log.Printf("Creating %s...", projectName)
 
-	buildStartTime := time.Now()
-	//path, err := ci.Deploy(username.(string), projectName)
-	_, err = ci.Deploy(user.Username, projectName)
+	buildInfo, err := ci.Deploy(user.Username, projectName)
 
-	buildDuration := time.Since(buildStartTime)
-	log.Printf("Build duration: %s\n", buildDuration)
+	log.Printf("Build duration: %s\n", buildInfo.BuildDuration)
 
 	if err != nil {
 		log.Fatalf("Error while trying to create project: %s", err)
-		buildStatus = "fail"
 	}
 
 	if !repo.Exists(client, user.Username, projectName) {
@@ -81,7 +76,6 @@ func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		githubTime := time.Since(gitHubStartTime)
 		log.Printf("Git repo creation duration: %s\n", githubTime)
 	}
-	buildInfo := store.BuildInfo{BuildTime: time.Now(), BuildDuration: buildDuration, BuildStatus: buildStatus}
 	project := store.Project{Name: projectName, Description: repoDescription, BuildsInfo: []store.BuildInfo{buildInfo}, LastBuildInfo: buildInfo}
 	user.Projects = append(user.Projects, project)
 
