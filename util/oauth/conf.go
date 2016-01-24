@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	// Instantiating the OAuth2 package to exchange the Code for a Token
+	// Conf instantiating the OAuth2 package to exchange the Code for a Token
 	Conf = &oauth2.Config{
 		ClientID:     os.Getenv("HUGOKU_OAUTH2_CLIENT_ID"),
 		ClientSecret: os.Getenv("HUGOKU_OAUTH2_CLIENT_SECRET"),

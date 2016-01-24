@@ -4,13 +4,13 @@ import (
 	"log"
 	"net/http"
 
-	"golang.org/x/oauth2"
-	"github.com/julienschmidt/httprouter"
-	"github.com/google/go-github/github"
 	"github.com/goincremental/negroni-sessions"
+	"github.com/google/go-github/github"
+	"github.com/julienschmidt/httprouter"
+	"golang.org/x/oauth2"
 
-	"github.com/gophergala2016/hugoku/util/oauth"
 	"github.com/gophergala2016/hugoku/store"
+	"github.com/gophergala2016/hugoku/util/oauth"
 )
 
 //GithubLoginCallback Called by github after authorization is granted
@@ -38,12 +38,15 @@ func GithubLoginCallback(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	// Get the user info
 	user, _, err := githubClient.Users.Get("")
 	if err != nil {
-		log.Printf("client.Users.Get() faled with '%s'\n", err)
+		log.Printf("client.Users.Get() failed with '%s'\n", err)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
-	var u store.User
+	u, err := store.GetUser(*user.Login)
+	if err != nil {
+		log.Printf("store.GetUser failed with '%s'\n", err)
+	}
 	u.Username = *user.Login
 	//	u.Email = *user.Email
 	u.Token = *token
