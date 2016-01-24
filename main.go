@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"text/template"
+	"time"
 
 	"golang.org/x/oauth2"
 
@@ -160,17 +161,21 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
-func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-
+// getUserFomSession gets the user from the usernane in the session on the http Request
+func getUserFromSession(r *http.Request) (store.User, error) {
 	session := sessions.GetSession(r)
 	username := session.Get("username")
-	user, err := store.GetUser(username.(string))
+	return store.GetUser(username.(string))
+}
+
+func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+
+	var buildStatus = "ok"
+	user, err := getUserFromSession(r)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	projectName := r.PostFormValue("name")
-
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: user.Token.AccessToken},
 	)
@@ -180,18 +185,19 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	log.Printf("Creating %s...", projectName)
 
 	//path, err := ci.Deploy(username.(string), projectName)
-	_, err = ci.Deploy(username.(string), projectName)
+	_, err = ci.Deploy(user.Username, projectName)
 
 	if err != nil {
 		log.Fatalf("Error while trying to create project: %s", err)
+		buildStatus = "fail"
 	}
 
-	project := store.Project{Name: projectName}
+	project := store.Project{Name: projectName, BuildsInfo: []store.BuildInfo{store.BuildInfo{BuildTime: time.Now(), BuildStatus: buildStatus}}}
 	user.Projects = append(user.Projects, project)
 
 	err = store.SaveUser(user)
 
-	if !repoExists(client, username.(string), projectName) {
+	if !repoExists(client, user.Username, projectName) {
 		repo := &github.Repository{
 			Name:    github.String(projectName),
 			Private: github.Bool(false),
@@ -260,6 +266,26 @@ func FAQ(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 // getProjectHandler is the Hugoku project page handdler and shows the project and the build history.
 func getProjectHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var id = ps.ByName("id")
+	user, err := getUserFromSession(r)
+	if err != nil {
+		log.Fatal(err)
+	}
 	// TODO: sanitize id
 	log.Printf("getProjectHandler %s!\n", id)
+
+	if id == "" {
+		log.Println("Missing project id!")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+	project, err := user.GetProject(id)
+	if err != nil {
+		log.Println("Error getting project: ", id)
+	}
+	t, err := template.ParseFiles("templates/project.html")
+	if err != nil {
+		log.Fatal("Error parsing the project page template")
+	}
+	t.Execute(w, project)
+
 }
