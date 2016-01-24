@@ -3,6 +3,7 @@ package ci
 import (
 	"bytes"
 	"fmt"
+
 	"log"
 	"os"
 	"os/exec"
@@ -114,13 +115,12 @@ func Build(username string, name string, path string) error {
 
 	for i := range commands {
 		err := commands[i].executeCommand()
-		fmt.Println("Command")
-		fmt.Println(commands[i].Command, commands[i].Args)
-		fmt.Println("Stdout")
-		fmt.Println(commands[i].Stdout)
-		fmt.Println("Stderr")
-		fmt.Println(commands[i].Stderr)
-		fmt.Println("-----")
+		log.Println("Command:", commands[i].Command, commands[i].Args)
+		log.Println("Stdout:")
+		log.Println(commands[i].Stdout)
+		log.Println("Stderr:")
+		log.Println(commands[i].Stderr)
+		log.Println("-----")
 		if err != nil {
 			return err
 		}
