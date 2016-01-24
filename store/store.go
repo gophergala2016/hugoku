@@ -23,9 +23,10 @@ type Project struct {
 type User struct {
 	Username string
 	// Email     string
-	Token     oauth2.Token
-	AvatarURL string
-	Projects  []Project
+	Token         oauth2.Token
+	AvatarURL     string
+	GithubProfile string
+	Projects      []Project
 }
 
 // BuildInfo type

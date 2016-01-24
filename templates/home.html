@@ -48,7 +48,7 @@
           </div>
 					<div class="col-md-12">
             <hr>
-            <h2><img width="40" height="40" src="{{.AvatarURL}}" alt="{{.Username}}"/> {{.Username}} projects</h2>
+            <h2><a href="{{.GithubProfile}}" class="github-profile-link"><img width="40" height="40" src="{{.AvatarURL}}" alt="{{.Username}}"/></a> {{.Username}} projects</h2>
 						<ul class="media-list">
 							{{range .Projects}}
                             <hr>

@@ -51,6 +51,7 @@ func GithubLoginCallback(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	//	u.Email = *user.Email
 	u.Token = *token
 	u.AvatarURL = *user.AvatarURL
+	u.GithubProfile = *user.HTMLURL
 	err = store.SaveUser(u)
 
 	session := sessions.GetSession(r)
