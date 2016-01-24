@@ -12,7 +12,7 @@ var (
 	Conf = &oauth2.Config{
 		ClientID:     os.Getenv("HUGOKU_OAUTH2_CLIENT_ID"),
 		ClientSecret: os.Getenv("HUGOKU_OAUTH2_CLIENT_SECRET"),
-		RedirectURL:  os.Getenv("HUGOKU_AUTH2_CALLBACK_URL"),
+		RedirectURL:  os.Getenv("HUGOKU_OAUTH2_CALLBACK_URL"),
 		Scopes:       []string{"user", "repo"},
 		Endpoint:     githuboauth.Endpoint,
 	}
