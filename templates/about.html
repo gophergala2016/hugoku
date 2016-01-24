@@ -1,29 +1,6 @@
 <html>
 
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href='https://fonts.googleapis.com/css?family=Droid+Sans|Droid+Sans+Mono|Droid+Serif' rel='stylesheet' type='text/css'>
-    <link href="/css/styles.css" rel='stylesheet' type='text/css'>
-    <style type="text/css">
-    body { 
-      font-family: 'Droid Sans', sans-serif;
-      font-size: 13.33pt;
-    }
-    h1,h2,h3,h4,h5,h6 {
-      font-family: 'Droid Serif', serif;
-    }
-    h1 {
-      font-size: 33.33pt;
-      font-weight: bold;
-    }
-    </style>
-  </head>
-
+  {{template "header"}}
   <body>
     <div class="navbar navbar-default navbar-static-top">
       <div class="container">
@@ -110,39 +87,8 @@
       </div>
     </div>
 
-    <footer class="section section-primary">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-6">
-            <h1><img src="http://icons.iconarchive.com/icons/musett/dragon-ballz/256/Dragon-Ball-icon.png" width="50"> Hugoku</h1>
-            <p>Hugoku has a google of power units.</p>
-          </div>
-          <div class="col-sm-6">
-            <p class="text-info text-right">
-              <br>
-              <br>
-            </p>
-            <div class="row">
-              <div class="col-md-12 hidden-lg hidden-md hidden-sm text-left">
-                <a href="#"><i class="fa fa-3x fa-fw fa-instagram text-inverse"></i></a>
-                <a href="#"><i class="fa fa-3x fa-fw fa-twitter text-inverse"></i></a>
-                <a href="#"><i class="fa fa-3x fa-fw fa-facebook text-inverse"></i></a>
-                <a href="#"><i class="fa fa-3x fa-fw fa-github text-inverse"></i></a>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12 hidden-xs text-right">
-                <a href="#"><i class="fa fa-3x fa-fw fa-instagram text-inverse"></i></a>
-                <a href="#"><i class="fa fa-3x fa-fw fa-twitter text-inverse"></i></a>
-                <a href="#"><i class="fa fa-3x fa-fw fa-facebook text-inverse"></i></a>
-                <a href="#"><i class="fa fa-3x fa-fw fa-github text-inverse"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
 
+    {{template "footer"}}
 
   </body>
 
