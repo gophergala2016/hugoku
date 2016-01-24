@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"text/template"
 	"time"
 
@@ -215,6 +217,37 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		}
 
 		// TODO: Make git repo to push after
+		wd, _ := os.Getwd()
+		err := os.Chdir(wd + "/repos/" + user.Username + "/" + projectName + "/")
+		if err != nil {
+			fmt.Println(os.Getwd())
+			log.Fatal(err)
+		}
+		cmd := exec.Command("git", []string{"init", "--quiet"}...)
+		err = cmd.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+		cmd = exec.Command("git", []string{"add", "."}...)
+		err = cmd.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+		cmd = exec.Command("git", []string{"commit", "-m", "'initial source code'"}...)
+		err = cmd.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+		cmd = exec.Command("git", []string{"remote", "add", "origin", "git@github.com:" + user.Username + "/" + projectName + ".git"}...)
+		err = cmd.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+		cmd = exec.Command("git", []string{"push", "--quiet", "-u", "origin", "master"}...)
+		err = cmd.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
 		/*
 			message := "m"
 			content := []byte("c")
