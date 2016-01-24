@@ -1,126 +1,138 @@
 <html>
 
-  {{template "header"}}
-  <body>
-    <div class="navbar navbar-default navbar-static-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#"><span>Hugoku.io</span></a>
-        </div>
-        <div class="collapse navbar-collapse" id="navbar-ex-collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li class="active">
-              <a href="/">Home</a>
-            </li>
-            <li>
-              <a href="/faq">FAQ</a>
-            </li>
-            <li>
-              <a href="/about">About</a>
-            </li>
-            <li>
-              <a href="/auth/logout">Logout</a>
-            </li>
+	{{template "header"}}
+	<body>
+		<div class="navbar navbar-default navbar-static-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#"><span>Hugoku.io</span></a>
+				</div>
+				<div class="collapse navbar-collapse" id="navbar-ex-collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li class="active">
+							<a href="/">Home</a>
+						</li>
+						<li>
+							<a href="/faq">FAQ</a>
+						</li>
+						<li>
+							<a href="/about">About</a>
+						</li>
+						<li>
+							<a href="/auth/logout">Logout</a>
+						</li>
 
-          </ul>
-        </div>
-      </div>
-    </div>
+					</ul>
+				</div>
+			</div>
+		</div>
 
-    <div class="section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <ul class="breadcrumb">
-              <li>
-                <a href="/">Projects</a>
-              </li>
+		<div class="section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<ul class="breadcrumb">
+							<li>
+								<a href="/">Projects</a>
+							</li>
 							<li class="active">Project {{.Name}}</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <img src="https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png" class="img-responsive" width="300">
-          </div>
-          <div class="col-md-8">
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-4">
+						<img src="https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png" class="img-responsive" width="300">
+					</div>
+					<div class="col-md-8">
 						<h1>Project {{.Name}}</h1>
 						<h3><a href="http://github.com/{{.Username}}/{{.Name}}">https://github.com/{{.Username}}/{{.Name}}</a></h3>
 						<p>{{.Description}}</p>
-            <br/>
-            <br/>
-            <div class="container-fluid text-center">
-              <div class="row">
-                <div class="col-md-4">
-                  <a class="btn btn-lg btn-primary"><i class="fa fa-refresh"></i> Rebuild the project</a>
-                </div>
-                <div class="col-md-4">
-                  <a id="delete_project" class="btn btn-lg btn-danger"><i class="fa fa-trash"></i> Delete the project</a>
-                </div>
-                <div class="col-md-4">
-                  <a id="view_project" href="http://{{.Name}}.hugoku.io" class="btn btn-lg btn-success"><i class="fa fa-globe"></i> View the site</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr/>
-        <div class="row">
-          <div class="col-md-12">
-            <h2>Project Builds</h2>
-            <ul class="media-list">
+						<br/>
+						<br/>
+						<div class="container-fluid text-center">
+							<div class="row">
+								<div class="col-md-4">
+									<a id="rebuild_button" class="btn btn-lg btn-primary"><i class="fa fa-refresh"></i> Rebuild the project</a>
+								</div>
+								<div class="col-md-4">
+									<a id="delete_project" class="btn btn-lg btn-danger"><i class="fa fa-trash"></i> Delete the project</a>
+								</div>
+								<div class="col-md-4">
+									<a id="view_project" href="http://{{.Name}}.hugoku.io" class="btn btn-lg btn-success"><i class="fa fa-globe"></i> View the site</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr/>
+				<div class="row">
+					<div class="col-md-12">
+						<h2>Project Builds</h2>
+						<ul class="media-list">
 							{{range .BuildsInfo}}
 							<li class="media {{.BuildStatus}}">
-                <hr/>
-                <div class="pull-right">
-                  <span class="pull-right build-status" style="font-weight: bold">Build {{.BuildStatus}}</span>
-                </div>
-                <a class="pull-left" href="#"><i class="fa fa-cogs fa-3x"></i></a>
-                <div class="media-body">
+								<hr/>
+								<div class="pull-right">
+									<span class="pull-right build-status" style="font-weight: bold">Build {{.BuildStatus}}</span>
+								</div>
+								<a class="pull-left" href="#"><i class="fa fa-cogs fa-3x"></i></a>
+								<div class="media-body">
 									<p>Build started at: {{.BuildTime.Format "Jan 2 15:04:05 2006"}}, and took {{.BuildDuration}}</p><Paste>
-                </div>
-                <h4 style="margin-left: 50px">Build Results</h4>
-                <div class="result code" style="background-color: #333; color: #fff; font-size: 8.33pt; padding: 5px; margin-left: 50px; height: 200px; scroll: auto">
+								</div>
+								<h4 style="margin-left: 50px">Build Results</h4>
+								<div class="result code" style="background-color: #333; color: #fff; font-size: 8.33pt; padding: 5px; margin-left: 50px; height: 200px; scroll: auto">
 									{{ if eq .BuildStatus "ok"}}
 										{{.BuildLog}}
 									{{else}}
 										{{.BuildErrorLog}}
 									{{end}}
-                </div>
-              </li>
+								</div>
+							</li>
 							{{end}}
-            </ul>
-            <hr/>
-          </div>
-        </div>
-      </div>
-    </div>
-    {{template "footer"}}
+						</ul>
+						<hr/>
+					</div>
+				</div>
+			</div>
+		</div>
+		{{template "footer"}}
 
-    <script type="text/javascript">
-    document.getElementById('delete_project').addEventListener('click', function () {
-    	if (window.confirm('Are you sure you want to delete the project?')) {
-    		$.ajax('/project/{{.Name}}', {
-    			method: 'DELETE',
-    			success: function () {
-    				window.location.replace('/');
-    			},
-    			error: function () {
-    				alert('There was an error trying to delete your project.');
-    			}
-    		});
-    	}
-    });
-    </script>
-  </body>
+		<script type="text/javascript">
+		document.getElementById('delete_project').addEventListener('click', function () {
+			if (window.confirm('Are you sure you want to delete the project?')) {
+				$.ajax('/project/{{.Name}}', {
+					method: 'DELETE',
+					success: function () {
+						window.location.replace('/');
+					},
+					error: function () {
+						alert('There was an error trying to delete your project.');
+					}
+				});
+			}
+		});
+
+		document.getElementById('rebuild_button').addEventListener('click', function () {
+			$.ajax('/project/{{.Name}}/build', {
+				method: 'POST',
+				success: function () {
+					window.location.reload();
+				},
+				error: function () {
+					alert('There was an error trying to rebuild your project.');
+				}
+			});
+		});
+		</script>
+	</body>
 </html>
