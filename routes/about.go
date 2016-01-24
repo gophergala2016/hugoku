@@ -15,7 +15,10 @@ func About(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		"templates/partials/footer.html",
 	)
 	if err != nil {
-		log.Fatal("Error parsing the about page template")
+		log.Fatal("Error parsing the about page template: ", err)
 	}
-	t.Execute(w, nil)
+	err = t.Execute(w, nil)
+	if err != nil {
+		log.Fatal("Error parsing the about page template", err)
+	}
 }

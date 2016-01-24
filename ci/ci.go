@@ -34,8 +34,18 @@ func (s *Step) executeCommand() error {
 		log.Fatal(err)
 	}
 
-	buf.ReadFrom(stdout)
-	bufErr.ReadFrom(stderr)
+	_, err = buf.ReadFrom(stdout)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = bufErr.ReadFrom(stderr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = bufErr.ReadFrom(stderr)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	if err := cmd.Wait(); err != nil {
 		log.Fatal(err)

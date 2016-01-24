@@ -10,6 +10,7 @@ test:
 lint:
 	go vet ./...
 	golint ./...
+	errcheck ./...
 
 clean:
 	rm -rf repos/*
@@ -27,3 +28,4 @@ deps: dev-deps
 
 dev-deps:
 	go get github.com/golang/lint/golint
+	go get github.com/kisielk/errcheck

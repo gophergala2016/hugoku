@@ -88,15 +88,18 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 			"templates/partials/footer.html",
 		)
 		if err != nil {
-			log.Fatal("Error parsing the index page template")
+			log.Fatal("Error parsing the index page template: ", err)
 		}
-		t.Execute(w, nil)
+		err = t.Execute(w, nil)
+		if err != nil {
+			log.Fatal("Error executing the index page template: ", err)
+		}
 	} else {
 		t, err := template.ParseFiles("templates/home.html",
 			"templates/partials/header.html",
 			"templates/partials/footer.html")
 		if err != nil {
-			log.Fatal("Error parsing the home page template")
+			log.Fatal("Error parsing the home page template: ", err)
 		}
 		log.Println("Recovering user data")
 		user, err := store.GetUser(username.(string))
@@ -104,7 +107,10 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 			log.Fatal(err)
 		}
 		log.Println(user)
-		t.Execute(w, user)
+		err = t.Execute(w, user)
+		if err != nil {
+			log.Fatal("Error executing the home page template: ", err)
+		}
 	}
 }
 
@@ -249,6 +255,7 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		}
 	}
 
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
 // repoExists checks if a repo exists
@@ -270,7 +277,7 @@ func getProjectHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	var id = ps.ByName("id")
 	user, err := getUserFromSession(r)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error getting the user from the session: ", err)
 	}
 	// TODO: sanitize id
 	log.Printf("getProjectHandler %s!\n", id)
@@ -282,14 +289,16 @@ func getProjectHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	}
 	project, err := user.GetProject(id)
 	if err != nil {
-		log.Println("Error getting project: ", id)
+		log.Println("Error getting project: ", id, err)
 	}
 	t, err := template.ParseFiles("templates/project.html",
 		"templates/partials/footer.html",
 		"templates/partials/header.html")
 	if err != nil {
-		log.Fatal("Error parsing the project page template")
+		log.Fatal("Error parsing the project page template:", err)
 	}
-	t.Execute(w, project)
-
+	err = t.Execute(w, project)
+	if err != nil {
+		log.Fatal("Error executing the project page template:", err)
+	}
 }
