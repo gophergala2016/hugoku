@@ -26,6 +26,11 @@ func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		log.Fatal(err)
 	}
 	projectName := r.PostFormValue("name")
+	if projectName == "" {
+		log.Println("Missing projectName")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	}
+	repoDescription := "Repository for " + projectName + " created by Hugoku"
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: user.Token.AccessToken},
 	)
@@ -34,28 +39,26 @@ func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	log.Printf("Creating %s...", projectName)
 
-	startTime := time.Now()
+	buildStartTime := time.Now()
 	//path, err := ci.Deploy(username.(string), projectName)
 	_, err = ci.Deploy(user.Username, projectName)
 
-	buildDuration := time.Since(startTime)
+	buildDuration := time.Since(buildStartTime)
+	log.Printf("Build duration: %s\n", buildDuration)
+
 	if err != nil {
 		log.Fatalf("Error while trying to create project: %s", err)
 		buildStatus = "fail"
 	}
 
-	buildInfo := store.BuildInfo{BuildTime: time.Now(), BuildDuration: buildDuration, BuildStatus: buildStatus}
-	project := store.Project{Name: projectName, BuildsInfo: []store.BuildInfo{buildInfo}, LastBuildInfo: buildInfo}
-	user.Projects = append(user.Projects, project)
-
-	err = store.SaveUser(user)
-
 	if !repo.Exists(client, user.Username, projectName) {
+		gitHubStartTime := time.Now()
 		repo := &github.Repository{
-			Name:    github.String(projectName),
-			Private: github.Bool(false),
+			Name:        github.String(projectName),
+			Private:     github.Bool(false),
+			Description: github.String(repoDescription),
 		}
-		_, _, err = client.Repositories.Create("", repo)
+		repo, _, err = client.Repositories.Create("", repo)
 		if err != nil {
 			log.Fatalf("Error while trying to create repo: %s", err)
 		}
@@ -75,9 +78,16 @@ func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		if err != nil {
 			log.Fatal(err)
 		}
+		githubTime := time.Since(gitHubStartTime)
+		log.Printf("Git repo creation duration: %s\n", githubTime)
 	}
+	buildInfo := store.BuildInfo{BuildTime: time.Now(), BuildDuration: buildDuration, BuildStatus: buildStatus}
+	project := store.Project{Name: projectName, Description: repoDescription, BuildsInfo: []store.BuildInfo{buildInfo}, LastBuildInfo: buildInfo}
+	user.Projects = append(user.Projects, project)
 
-	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	err = store.SaveUser(user)
+
+	//http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
 // GetProject is the Hugoku project page handdler and shows the project and the build history.
