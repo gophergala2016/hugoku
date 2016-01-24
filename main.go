@@ -189,15 +189,17 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 
 	log.Printf("Creating %s...", projectName)
 
+	startTime := time.Now()
 	//path, err := ci.Deploy(username.(string), projectName)
 	_, err = ci.Deploy(user.Username, projectName)
 
+	buildDuration := time.Since(startTime)
 	if err != nil {
 		log.Fatalf("Error while trying to create project: %s", err)
 		buildStatus = "fail"
 	}
 
-	buildInfo := store.BuildInfo{BuildTime: time.Now(), BuildStatus: buildStatus}
+	buildInfo := store.BuildInfo{BuildTime: time.Now(), BuildDuration: buildDuration, BuildStatus: buildStatus}
 	project := store.Project{Name: projectName, BuildsInfo: []store.BuildInfo{buildInfo}, LastBuildInfo: buildInfo}
 	user.Projects = append(user.Projects, project)
 
