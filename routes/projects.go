@@ -27,7 +27,8 @@ func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	projectName := r.PostFormValue("name")
 	if projectName == "" {
 		log.Println("Missing projectName")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 	}
 	repoDescription := "Repository for " + projectName + " created by Hugoku"
 	ts := oauth2.StaticTokenSource(
