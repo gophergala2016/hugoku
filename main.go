@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -19,6 +18,7 @@ import (
 	githuboauth "golang.org/x/oauth2/github"
 
 	"github.com/gophergala2016/hugoku/ci"
+	"github.com/gophergala2016/hugoku/routes"
 	"github.com/gophergala2016/hugoku/store"
 )
 
@@ -63,15 +63,14 @@ func Serve() {
 	router.GET("/auth/callback", githubCallbackHandler)
 	router.GET("/project/:id", getProjectHandler)
 	router.POST("/project", postProjectHandler)
-	//router.GET("/v1/projects/:id", getProjectHandler)
-	//router.POST("/v1/projects", postProjectHandler)
 	router.GET("/about", About)
-	router.GET("/faq", FAQ)
+	router.GET("/faq", routes.FAQ)
 
 	// Apply middleware to the router
 	middle.UseHandler(router)
 
 	log.Println("Started running on http://127.0.0.1:8080")
+
 	// TODO: Get the port from flag, config file or environment var
 	log.Fatal(http.ListenAndServe(":8080", middle))
 }
@@ -213,16 +212,14 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 			Private: github.Bool(false),
 		}
 		_, _, err = client.Repositories.Create("", repo)
-
 		if err != nil {
 			log.Fatalf("Error while trying to create repo: %s", err)
 		}
 
-		// TODO: Make git repo to push after
+		// Push the repo
 		wd, _ := os.Getwd()
 		err := os.Chdir(wd + "/repos/" + user.Username + "/" + projectName + "/")
 		if err != nil {
-			fmt.Println(os.Getwd())
 			log.Fatal(err)
 		}
 		cmd := exec.Command("git", []string{"init", "--quiet"}...)
@@ -250,24 +247,6 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		if err != nil {
 			log.Fatal(err)
 		}
-		/*
-			message := "m"
-			content := []byte("c")
-			sha := "f5f369044773ff9c6383c087466d12adb6fa0828"
-			repositoryContentsOptions := &github.RepositoryContentFileOptions{
-				Message: &message,
-				Content: content,
-				SHA:     &sha,
-				//Committer: &github.CommitAuthor{Name: string(username)},
-				Committer: &github.CommitAuthor{Name: github.String(username.(string)), Email: github.String(user.Email)},
-			}
-			// createResponse, _, err := client.Repositories.CreateFile(username.(string), projectName, path, repositoryContentsOptions)
-			_, _, err := client.Repositories.CreateFile(username.(string), projectName, path, repositoryContentsOptions)
-			if err != nil {
-				log.Printf("Repositories.CreateFile returned error: %v", err)
-			}
-		*/
-
 	}
 
 }
@@ -294,17 +273,6 @@ func About(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	)
 	if err != nil {
 		log.Fatal("Error parsing the about page template")
-	}
-	t.Execute(w, nil)
-}
-
-// FAQ shows frequently asqued questions about the project, team  etc ...
-func FAQ(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	t, err := template.ParseFiles("templates/faq.html",
-		"templates/partials/header.html",
-		"templates/partials/footer.html")
-	if err != nil {
-		log.Fatal("Error parsing the FAQ page template")
 	}
 	t.Execute(w, nil)
 }
