@@ -99,9 +99,11 @@ func initCommandsExistingSite(username string, name string, path string) []Step 
 
 // Build compiles a project
 func Build(username string, name string, path string) (store.BuildInfo, error) {
+
 	var commands []Step
-	var buildInfo = store.BuildInfo{BuildPath: path}
-	buildInfo.BuildTime = time.Now()
+
+	var buildInfo = store.BuildInfo{BuildPath: path, BuildTime: time.Now()}
+
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		commands = initCommandsNewSite(username, name, path)
 	} else {
