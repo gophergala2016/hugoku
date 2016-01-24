@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"golang.org/x/oauth2"
 	"io/ioutil"
 	"os"
 	"time"
-
-	"golang.org/x/oauth2"
 )
 
 // Project type
@@ -73,4 +72,19 @@ func (u User) GetProject(name string) (*Project, error) {
 		}
 	}
 	return nil, errors.New("Project not found")
+}
+
+// RemoveProject from the user.
+func (u *User) RemoveProject(name string) {
+	var k int
+	for i, p := range u.Projects {
+		if p.Name == name {
+			k = i
+		}
+	}
+	if k > 0 {
+		u.Projects = append(u.Projects[:k], u.Projects[k+1:]...)
+	} else {
+		u.Projects = u.Projects[1:]
+	}
 }

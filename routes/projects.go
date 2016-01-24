@@ -120,6 +120,7 @@ func GetProject(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		user.GithubProfile,
 	}
 	err = t.Execute(w, context)
+
 	if err != nil {
 		log.Fatal("Error executing the project page template:", err)
 	}
@@ -153,6 +154,11 @@ func DeleteProject(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 			return
 		}
 		cmd.Run("rm", []string{"-rf", id})
+
+		user.RemoveProject(id)
+
+		err = os.Chdir(wd)
+		err = store.SaveUser(user)
 		log.Printf("DeleteProject %s!\n", id)
 		w.WriteHeader(http.StatusNoContent)
 	}
