@@ -90,7 +90,7 @@
                   <a class="btn btn-lg btn-primary">Rebuild the project</a>
                 </div>
                 <div class="col-md-6">
-                  <a class="btn btn-lg btn-danger">Delete the project</a>
+                  <a id="delete_project" class="btn btn-lg btn-danger">Delete the project</a>
                 </div>
               </div>
             </div>
@@ -123,5 +123,21 @@
       </div>
     </div>
     {{template "footer"}}
+
+    <script type="text/javascript">
+    document.getElementById('delete_project').addEventListener('click', function () {
+    	if (window.confirm('Are you sure you want to delete the project?')) {
+    		$.ajax('/project/{{.Name}}', {
+    			method: 'DELETE',
+    			success: function () {
+    				window.location.replace('/');
+    			},
+    			error: function () {
+    				alert('There was an error trying to delete your project.');
+    			}
+    		});
+    	}
+    });
+    </script>
   </body>
 </html>
