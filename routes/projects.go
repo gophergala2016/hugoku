@@ -110,7 +110,16 @@ func GetProject(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if err != nil {
 		log.Fatal("Error parsing the project page template:", err)
 	}
-	err = t.Execute(w, project)
+	context := struct {
+		*store.Project
+		Username      string
+		GithubProfile string
+	}{
+		project,
+		user.Username,
+		user.GithubProfile,
+	}
+	err = t.Execute(w, context)
 	if err != nil {
 		log.Fatal("Error executing the project page template:", err)
 	}

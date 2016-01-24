@@ -55,7 +55,7 @@
           </div>
           <div class="col-md-8">
 						<h1>Project {{.Name}}</h1>
-            <h3><a href="http://github.com/xxxx/{{.Name}}">http://github.com/xxxx/{{.Name}}</a></h3>
+						<h3><a href="http://github.com/{{.Username}}/{{.Name}}">https://github.com/{{.Username}}/{{.Name}}</a></h3>
 						<p>{{.Description}}</p>
             <br/>
             <br/>
@@ -87,36 +87,15 @@
                 </div>
                 <a class="pull-left" href="#"><i class="fa fa-cogs fa-3x"></i></a>
                 <div class="media-body">
-									<h4 class="media-heading build-datetime">{{.BuildTime.Format "Jan 2 15:04:05 2006"}}</h4>
-                  <p>Build started at: <date>, and took {{.BuildDuration}}</p>
+									<p>Build started at: {{.BuildTime.Format "Jan 2 15:04:05 2006"}}, and took {{.BuildDuration}}</p><Paste>
                 </div>
                 <h4 style="margin-left: 50px">Build Results</h4>
                 <div class="result code" style="background-color: #333; color: #fff; font-size: 8.33pt; padding: 5px; margin-left: 50px; height: 200px; scroll: auto">
-                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
-
-                  <p>Aenean commodo ligula eget dolor. Aenean massa.</p>
-
-                  <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-
-                  <p>Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.</p>
-
-                  <p>Nulla consequat massa quis enim.</p>
-
-                  <p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.</p>
-
-                  <p>In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.</p>
-
-                  <p>Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.</p>
-
-                  <p>Vivamus elementum semper nisi. Aenean vulputate eleifend tellus.</p>
-
-                  <p>Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
-
-                  <p>Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus.</p>
-
-                  <p>Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet.</p>
-
-                  <p>Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.</p>
+									{{ if eq .BuildStatus "ok"}}
+										{{.BuildLog}}
+									{{else}}
+										{{.BuildErrorLog}}
+									{{end}}
                 </div>
               </li>
 							{{end}}
