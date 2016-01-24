@@ -16,7 +16,8 @@ type Project struct {
 
 // User type
 type User struct {
-	Username  string
+	Username string
+	// Email     string
 	Token     oauth2.Token
 	AvatarURL string
 	Projects  []Project
