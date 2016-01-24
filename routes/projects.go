@@ -18,6 +18,7 @@ import (
 	"github.com/gophergala2016/hugoku/util/session"
 )
 
+// PostProject ...
 func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var buildStatus = "ok"
 	user, err := session.GetUser(r)
@@ -79,7 +80,7 @@ func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
-// getProject is the Hugoku project page handdler and shows the project and the build history.
+// GetProject is the Hugoku project page handdler and shows the project and the build history.
 func GetProject(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var id = ps.ByName("id")
 	user, err := session.GetUser(r)
