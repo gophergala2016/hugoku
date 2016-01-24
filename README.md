@@ -11,7 +11,13 @@ Hugo try to be a service like Heroku for automate the generation of static websi
 In the market there is other solution for doing that like [netlify](https://www.netlify.com), but no as open source, and not created in the Gopher Gala.
 
 ## Configuration
-Define the HUGOKU_OAUTH2_CLIENT_ID and HUGOKU_OAUTH2_CLIENT_SECRET environment variables with your Github App credentials.
+Define the `HUGOKU_OAUTH2_CLIENT_ID` and `HUGOKU_OAUTH2_CLIENT_SECRET`  environment variables with your Github App credentials.
+
+You can also set the `HUGOKU_OAUTH2_CALLBACK_URL` environment variable to point to the url for the callback auth call usually `https://yourdomain.com/auth/callback` for example:
+
+    https://example.com/auth/callback
+
+Or you can also set the callback when you [register the application on Github](https://github.com/settings/applications/new) using the field *Authorization callback URL*
 
 ## Install
 
