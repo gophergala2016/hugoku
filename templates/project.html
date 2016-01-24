@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="section">
       <div class="container">
         <div class="row">
@@ -79,15 +79,45 @@
 							{{range .BuildsInfo}}
 							<li class="media {{.BuildStatus}}">
                 <hr/>
+                <div class="pull-right">
+                  <span class="pull-right build-status" style="font-weight: bold">Build {{.BuildStatus}}</span>
+                  <br/>
+                  <span class="pull-right build-duration">{{.BuildDuration}}</span>
+                </div>
                 <a class="pull-left" href="#"><i class="fa fa-cogs fa-3x"></i></a>
                 <div class="media-body">
-									<span class="pull-right build-status" style="font-weight: bold">{{.BuildStatus}}</span>
 									<h4 class="media-heading build-datetime">{{.BuildTime.Format "Jan 2 15:04:05 2006"}}</h4>
-									<span class="pull-right build-duration">{{.BuildDuration}}</span>
-
                   <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
                     ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at,
                     tempus viverra turpis.</p>
+                </div>
+                <h4 style="margin-left: 50px">Build Results</h4>
+                <div class="result code" style="background-color: #333; color: #fff; font-size: 8.33pt; padding: 5px; margin-left: 50px; height: 200px; scroll: auto">
+                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+
+                  <p>Aenean commodo ligula eget dolor. Aenean massa.</p>
+
+                  <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+
+                  <p>Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.</p>
+
+                  <p>Nulla consequat massa quis enim.</p>
+
+                  <p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.</p>
+
+                  <p>In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.</p>
+
+                  <p>Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.</p>
+
+                  <p>Vivamus elementum semper nisi. Aenean vulputate eleifend tellus.</p>
+
+                  <p>Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
+
+                  <p>Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus.</p>
+
+                  <p>Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet.</p>
+
+                  <p>Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.</p>
                 </div>
               </li>
 							{{end}}
