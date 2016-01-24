@@ -120,3 +120,36 @@ func GetProject(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		log.Fatal("Error executing the project page template:", err)
 	}
 }
+
+// DeleteProject Deletes a project
+func DeleteProject(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	var id = ps.ByName("id")
+	user, err := session.GetUser(r)
+	if err != nil {
+		log.Println("Error getting the user from the session: ", err)
+		http.Error(w, "Forbidden", http.StatusForbidden)
+		return
+	}
+
+	if id == "" {
+		log.Println("Missing project id!")
+		http.NotFound(w, r)
+		return
+	}
+	_, err = user.GetProject(id)
+	if err != nil {
+		log.Println("Error getting project: ", id, err)
+		http.NotFound(w, r)
+	} else {
+		// TODO: sanitize id
+		wd, _ := os.Getwd()
+		err := os.Chdir(wd + "/repos/" + user.Username + "/")
+		if err != nil {
+			http.Error(w, "Unexpected Error", http.StatusInternalServerError)
+			return
+		}
+		cmd.Run("rm", []string{"-rf", id})
+		log.Printf("DeleteProject %s!\n", id)
+		w.WriteHeader(http.StatusNoContent)
+	}
+}
