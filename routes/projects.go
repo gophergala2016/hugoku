@@ -3,19 +3,19 @@ package routes
 import (
 	"log"
 	"net/http"
-	"text/template"
 	"os"
+	"text/template"
 	"time"
 
-	"golang.org/x/oauth2"
 	"github.com/google/go-github/github"
 	"github.com/julienschmidt/httprouter"
+	"golang.org/x/oauth2"
 
 	"github.com/gophergala2016/hugoku/ci"
 	"github.com/gophergala2016/hugoku/store"
-	"github.com/gophergala2016/hugoku/util/session"
 	"github.com/gophergala2016/hugoku/util/cmd"
 	"github.com/gophergala2016/hugoku/util/repo"
+	"github.com/gophergala2016/hugoku/util/session"
 )
 
 func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -70,6 +70,10 @@ func PostProject(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		cmd.Run("git", []string{"commit", "-m", "'initial source code'"})
 		cmd.Run("git", []string{"remote", "add", "origin", "git@github.com:" + user.Username + "/" + projectName + ".git"})
 		cmd.Run("git", []string{"push", "--quiet", "-u", "origin", "master"})
+		err = os.Chdir(wd)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
