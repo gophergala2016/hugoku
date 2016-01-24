@@ -164,6 +164,7 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	session := sessions.GetSession(r)
 	username := session.Get("username")
 	user, err := store.GetUser(username.(string))
+	var buildStatus = "ok"
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -182,9 +183,10 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 
 	if err != nil {
 		log.Fatalf("Error while trying to create project: %s", err)
+		buildStatus = "fail"
 	}
 
-	project := store.Project{Name: projectName}
+	project := store.Project{Name: projectName, BuildInfo: store.BuildInfo{BuildTime: time.Now(), BuildStatus: buildStatus}}
 	user.Projects = append(user.Projects, project)
 
 	err = store.SaveUser(user)
