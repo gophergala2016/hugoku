@@ -40,7 +40,7 @@ var (
 		ClientID:     os.Getenv("HUGOKU_OAUTH2_CLIENT_ID"),
 		ClientSecret: os.Getenv("HUGOKU_OAUTH2_CLIENT_SECRET"),
 		RedirectURL:  os.Getenv("HUGOKU_AUTH2_CALLBACK_URL"),
-		Scopes:       []string{"user:email", "repo"},
+		Scopes:       []string{"user", "repo"},
 		Endpoint:     githuboauth.Endpoint,
 	}
 )
@@ -148,6 +148,7 @@ func githubCallbackHandler(w http.ResponseWriter, r *http.Request, _ httprouter.
 
 	var u store.User
 	u.Username = *user.Login
+	//	u.Email = *user.Email
 	u.Token = *token
 	u.AvatarURL = *user.AvatarURL
 	err = store.SaveUser(u)
@@ -178,6 +179,7 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 
 	log.Printf("Creating %s...", projectName)
 
+	//path, err := ci.Deploy(username.(string), projectName)
 	_, err = ci.Deploy(username.(string), projectName)
 
 	if err != nil {
@@ -199,9 +201,28 @@ func postProjectHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		if err != nil {
 			log.Fatalf("Error while trying to create repo: %s", err)
 		}
+
+		// TODO: Make git repo to push after
+		/*
+			message := "m"
+			content := []byte("c")
+			sha := "f5f369044773ff9c6383c087466d12adb6fa0828"
+			repositoryContentsOptions := &github.RepositoryContentFileOptions{
+				Message: &message,
+				Content: content,
+				SHA:     &sha,
+				//Committer: &github.CommitAuthor{Name: string(username)},
+				Committer: &github.CommitAuthor{Name: github.String(username.(string)), Email: github.String(user.Email)},
+			}
+			// createResponse, _, err := client.Repositories.CreateFile(username.(string), projectName, path, repositoryContentsOptions)
+			_, _, err := client.Repositories.CreateFile(username.(string), projectName, path, repositoryContentsOptions)
+			if err != nil {
+				log.Printf("Repositories.CreateFile returned error: %v", err)
+			}
+		*/
+
 	}
 
-	// TODO: Make git repo to push after
 }
 
 // repoExists checks if a repo exists
