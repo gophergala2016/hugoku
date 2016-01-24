@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 
-	"log"
 	"os"
 	"os/exec"
 	"time"
@@ -109,16 +108,11 @@ func Build(username string, name string, path string) (store.BuildInfo, error) {
 	} else {
 		commands = initCommandsExistingSite(username, name, path)
 	}
+
 	for i := range commands {
 		err := commands[i].ExecuteCommand()
-		log.Println("Command:", commands[i].Command, commands[i].Args)
-		log.Println("Stdout")
-		log.Println(commands[i].Stdout)
 		buildInfo.BuildLog += commands[i].Stdout
-		log.Println("Stderr")
-		log.Println(commands[i].Stderr)
 		buildInfo.BuildErrorLog += commands[i].Stderr
-		log.Println("-----")
 		if err != nil {
 			buildInfo.BuildDuration = time.Since(buildInfo.BuildTime)
 			buildInfo.BuildStatus = "fail"
