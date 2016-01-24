@@ -82,13 +82,14 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	username := session.Get("username")
 
 	if username == nil {
-		t, err := template.ParseFiles("templates/index.html")
+		t, err := template.ParseFiles("templates/index.html",
+			"templates/partials/header.html")
 		if err != nil {
 			log.Fatal("Error parsing the index page template")
 		}
 		t.Execute(w, nil)
 	} else {
-		t, err := template.ParseFiles("templates/home.html")
+		t, err := template.ParseFiles("templates/home.html", "templates/partials/header.html")
 		if err != nil {
 			log.Fatal("Error parsing the home page template")
 		}
@@ -248,7 +249,7 @@ func repoExists(client *github.Client, username string, projectName string) bool
 
 // About shows info about the project, team  etc ...
 func About(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	t, err := template.ParseFiles("templates/about.html")
+	t, err := template.ParseFiles("templates/about.html", "templates/partials/header.html")
 	if err != nil {
 		log.Fatal("Error parsing the about page template")
 	}
@@ -257,7 +258,7 @@ func About(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 // FAQ shows frequently asqued questions about the project, team  etc ...
 func FAQ(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	t, err := template.ParseFiles("templates/faq.html")
+	t, err := template.ParseFiles("templates/faq.html", "templates/partials/header.html")
 	if err != nil {
 		log.Fatal("Error parsing the FAQ page template")
 	}
@@ -283,7 +284,7 @@ func getProjectHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	if err != nil {
 		log.Println("Error getting project: ", id)
 	}
-	t, err := template.ParseFiles("templates/project.html")
+	t, err := template.ParseFiles("templates/project.html", "templates/partials/header.html")
 	if err != nil {
 		log.Fatal("Error parsing the project page template")
 	}
